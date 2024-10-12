@@ -1,0 +1,58 @@
+{
+  "COLLECTIONS": "=>",
+  "users": [
+    {
+      "_id": "OBJECTID",
+      "username": "Fyshi",
+      "country": "Austria",
+      "skins": [
+        "OBJECTID",
+        "OBJECTID2"
+      ],
+      "replays": [
+        {
+          "record": 53.02,
+          "map": "OBJECTID",
+          "skin": "OBJECTID"
+        },
+        {
+          "record": 49.60,
+          "map": "OBJECTID",
+          "skin": "OBJECTID"
+        }
+      ]
+    }
+  ],
+  "maps": [
+    {
+      "_id": "OBJECTID",
+      "title": "Loopy Loops",
+      "author_medal": 52.96,
+      "gold_medal": 55,
+      "silver_medal": 60,
+      "bronze_medal": 65,
+      "creator": "OBJECTID"
+    },
+    {
+      "_id": "OBJECTID",
+      "title": "Twisty Twists",
+      "author_medal": 17.60,
+      "gold_medal": 19,
+      "silver_medal": 23,
+      "bronze_medal": 27,
+      "creator": "OBJECTID"
+    }
+  ],
+  "skins": [
+    {
+      "_id": "OBJECTID",
+      "code": "FFFFFF-000000-000000-6942ff",
+      "creator": "OBJECTID"
+    },
+    {
+      "_id": "OBJECTID2",
+      "code": "FFFFFF-000000-000000-6942ff",
+      "creator": "OBJECTID"
+    }
+  ]
+}

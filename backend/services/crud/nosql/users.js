@@ -19,5 +19,29 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const defaultUsers = [
+  { username: "Fyshi", country: "Austria" },
+  { username: "Hunter1o1", country: "Austria" },
+  { username: "FastJack", country: "USA" },
+  { username: "SpeedDemon", country: "Canada" },
+  { username: "NitroBlaze", country: "Germany" },
+  { username: "SkyRunner", country: "France" },
+  { username: "DriftKing", country: "Japan" },
+  { username: "TurboTornado", country: "Brazil" },
+  { username: "Overdrive", country: "UK" },
+  { username: "StormChaser", country: "Australia" },
+  { username: "ShadowRacer", country: "Russia" },
+  { username: "Blitz", country: "Poland" },
+  { username: "RacingAce", country: "Italy" },
+  { username: "TrackMaster", country: "Spain" },
+  { username: "RocketMan", country: "South Korea" },
+  { username: "WildWhip", country: "South Africa" },
+  { username: "Dragster", country: "Mexico" },
+  { username: "HotRod", country: "New Zealand" },
+  { username: "RazorEdge", country: "Netherlands" },
+  { username: "ZoomZoom", country: "Sweden" },
+];
+
 const User = mongoose.model("User", userSchema);
 export default User;
+export { defaultUsers };

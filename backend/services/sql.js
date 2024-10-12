@@ -9,7 +9,7 @@ function query(sql) {
   return db.prepare(sql);
 }
 
-function run(sql) {
+async function run(sql) {
   return db.exec(sql);
 }
 

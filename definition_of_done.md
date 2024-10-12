@@ -1,7 +1,7 @@
 	- 2: 	[x]
 
 	Nach Auswahl des relationalen Referenzprojektes Implementierung mit einer MongoDB-Schnittstelle der Wahl in der Variante "Optimiert auf Frontend"
-	- 1: 	[ ] Modell 
+	- 1: 	[x] Modell 
 	- 1: 	[ ] lauffähige Implementierung
 
 	Testen der CRUD-Operations sowohl auf json-DB als auch auf relationale DB mit Laufzeiten. Also zuerst 

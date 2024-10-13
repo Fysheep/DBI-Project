@@ -9,8 +9,8 @@ db.query = function (sql, params = []) {
   return db.prepare(sql).all(params);
 };
 
-db.run = function (sql, params = []) {
-  return db.exec(sql).all(params);
+db.run = function (sql) {
+  return db.exec(sql);
 };
 
 export default db;

@@ -1,6 +1,7 @@
 import SQLrouter from "./routes/sql.routes.js";
 import noSQLrouter from "./routes/nosql.routes.js";
-import baseRouter from "./routes/base.routes.js"
+import baseRouter from "./routes/base.routes.js";
+import testRouter from "./routes/test.routes.js";
 
 import express from "express";
 import { connect } from "./services/nosql.js";
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 app.use("/sql/", SQLrouter);
 app.use("/nosql/", noSQLrouter);
 app.use("/", baseRouter);
+app.use("/test/", testRouter);
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);

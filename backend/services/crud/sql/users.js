@@ -1,9 +1,6 @@
 import db from "../../sql.js";
 
-const cols = [];
-const listedCols =
-  /* cols.map(m => `${m[0]} AS ${m[1]}`).reduce((a,b) => a + ", " + b) */ "*";
-const selectAll = `SELECT ${listedCols} FROM`;
+const selectAll = "SELECT * FROM";
 
 function getAll(params = []) {
   const data = db.query(`${selectAll} users`, [...params]);

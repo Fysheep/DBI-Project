@@ -5,12 +5,12 @@ const db = new sqlite(path.resolve("sql/trackmania.db"), {
   fileMustExist: true,
 });
 
-function query(sql) {
-  return db.prepare(sql);
-}
+db.query = function (sql, params = []) {
+  return db.prepare(sql).all(params);
+};
 
-async function run(sql) {
-  return db.exec(sql);
-}
+db.run = function (sql, params = []) {
+  return db.exec(sql).all(params);
+};
 
-export default { query, run };
+export default db;

@@ -1,8 +1,7 @@
 import express from "express";
 import db from "../services/sql.js";
-import User, { defaultUsers } from "../services/crud/nosql/users.js";
-import Skin, { defaultSkins } from "../services/crud/nosql/skins.js";
-import Map, { defaultMaps } from "../services/crud/nosql/maps.js";
+import User from "../services/crud/nosql/users.js";
+import { defaultUsers } from "../services/crud/nosql/userData.js";
 import fs from "node:fs";
 
 async function reset() {
@@ -15,8 +14,6 @@ async function reset() {
   });
 
   await User.deleteMany({});
-  await Skin.deleteMany({});
-  await Map.deleteMany({});
 }
 
 const baseRouter = express.Router();
@@ -25,7 +22,7 @@ baseRouter.get("/reset", async function (req, res, next) {
   try {
     //reset
     await reset();
-    res.json({ code: 200 });
+    res.json({ message: "done" });
   } catch (err) {
     console.error(`Error while resetting `, err.message);
     next(err);
@@ -46,53 +43,77 @@ baseRouter.get("/base", async function (req, res, next) {
     });
 
     //insert base NoSQL (bit more complicated, because of unknown Object IDS)
-    const users = await User.insertMany(defaultUsers);
+    await User.insertMany(defaultUsers);
 
-    //Structured Clone to cut connection
-    const maps = structuredClone(defaultMaps);
-    maps.map((m) => {
-      m.creator = users.find((f) => f.username == m.creator)._id;
-      return m;
-    });
-    await Map.insertMany(maps);
-
-    //Structured Clone to cut connection
-    const skins = structuredClone(defaultSkins);
-    skins.map((m) => {
-      m.creator = users.find((f) => f.username == m.creator)._id;
-      return m;
-    });
-    await Skin.insertMany(skins);
-
-    res.json(await User.find());
+    res.json({ message: "done" });
   } catch (err) {
     console.error(`Error while building base `, err.message);
     next(err);
   }
 });
 
+/**
+ * Puts [Amount] of Users into the MongoDB and measures the time it takes
+ * */
 async function insertNoSQL(amount) {
-  const array = [];
-
-  for (let i = 0; i <= amount; i++) {
-    array.push({ username: `Player${i}`, country: "Austria" });
+  const array = new Array(amount);
+  for (let i = 0; i < amount; i++) {
+    array[i] = {
+      username: `Player${i}`,
+      country: "Austria",
+      skins: [
+        { code: "AAAAAA-000000-000000-000000", name: "black mamba" },
+        { code: "AAAAAA-FFFFFF-FFFFFF-FFFFFF", name: "white mamba" },
+      ],
+    };
   }
+
+  const BATCH_SIZE = 1000;
   const startTimer = Date.now();
-  await User.insertMany(array);
+
+  for (let i = 0; i < amount; i += BATCH_SIZE) {
+    const batch = array.slice(i, i + BATCH_SIZE);
+    await User.insertMany(batch, { ordered: false, validateBeforeSave: false });
+  }
+
   return Date.now() - startTimer;
 }
 
+/**
+ * Puts [Amount] of Users into the SQLite Database and measures the time it takes
+ * */
 function insertSQL(amount) {
-  const array = [];
+  const userArray = [];
+  const skinArray = [];
 
-  for (let i = 0; i < amount; i++) {
-    array.push({ username: `Player${i}`, country: "Austria" });
+  for (let i = 1; i <= amount; i++) {
+    userArray[i - 1] = { username: `Player${i}`, country: "Austria" };
+    skinArray.push(
+      {
+        code: "AAAAAA-000000-000000-000000",
+        name: "black mamba",
+        creator: i,
+      },
+      {
+        code: "AAAAAA-FFFFFF-FFFFFF-FFFFFF",
+        name: "white mamba",
+        creator: i,
+      }
+    );
   }
+
+  const userRunString = userArray
+    .map((m) => `('${m.username}', '${m.country}')`)
+    .join(",");
+
+  const skinRunString = skinArray
+    .map((m) => `('${m.code}', '${m.name}', '${m.creator}')`)
+    .join(",");
+
   const startTimer = Date.now();
+  db.run(`INSERT INTO users(username, country) VALUES ${userRunString};`);
   db.run(
-    `INSERT INTO users(username, country) VALUES ${array
-      .map((m) => `('${m.username}', '${m.country}')`)
-      .join(",")};`
+    `INSERT INTO skins(code, skin_name, creator) VALUES ${skinRunString};`
   );
   return Date.now() - startTimer;
 }
@@ -118,8 +139,7 @@ baseRouter.get("/test", async function (req, res, next) {
     await reset();
     const t6 = await insertNoSQL(100_000);
     const _t6 = insertSQL(100_000);
-
-    await reset();
+    /* await reset(); */
 
     res.json({
       nosql: { t3: t3, t4: t4, t5: t5, t6: t6 },

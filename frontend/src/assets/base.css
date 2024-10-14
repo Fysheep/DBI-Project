@@ -1,0 +1,22 @@
+body {
+  --nav-height: 2rem;
+  --nav-height-outer: calc(var(--nav-height) + 36.8px);
+
+  --nav-radius: 0.5rem;
+
+  --button-radius: 1rem;
+
+  &.dark {
+    --body-bg: #222;
+    --nav-bg: linear-gradient(79deg, rgb(2, 105, 146), rgb(120, 217, 255));
+    --button-bg: whitesmoke;
+
+    --nav-border: linear-gradient(0deg, white, white);
+
+    --body-text-color: white;
+    --button-text-color: black;
+
+    --shadow-color: whitesmoke;
+    --nav-text-shadows: drop-shadow(0 0 5px black);
+  }
+}

@@ -1,15 +1,11 @@
     	[x] - 2: ¯\_(ツ)_/¯ Anfrage I guess
-
-    Nach Auswahl des relationalen Referenzprojektes Implementierung mit einer MongoDB-Schnittstelle der Wahl in der Variante "Optimiert auf Frontend"
     	[x] - 1:	Model
     	[ ] - 1:	lauffähige Implementierung
 
 ---
 
     	[x] - 0.5:	Umsetzung auf Atlas-Cloud
-
     	[ ] - 0.75:	Verwendung eines JSON-Schemas und Tests, mit Schema verletzung
-
    		[ ] - 1.5:	funktionales Frontend mit Auswahlmöglichkeit (=Filter auf Abfrage)
 
 ---

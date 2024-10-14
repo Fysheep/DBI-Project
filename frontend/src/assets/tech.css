@@ -1,0 +1,179 @@
+.mw-0 {
+  min-width: 0;
+}
+
+.mh-0 {
+  min-height: 0;
+}
+
+.fwr-wrap {
+  flex-wrap: wrap;
+}
+
+.fwr-nowrap {
+  flex-wrap: nowrap;
+}
+
+.twr-wrap {
+  text-wrap: wrap;
+}
+
+.twr-nowrap {
+  text-wrap: nowrap;
+}
+
+.ta-left {
+  text-align: left !important;
+}
+
+.ta-center {
+  text-align: center !important;
+}
+
+.ta-right {
+  text-align: right !important;
+}
+
+.zi-0 {
+  z-index: 0;
+}
+
+.zi-1 {
+  z-index: 1;
+}
+
+.bdf-b {
+  backdrop-filter: blur(5px);
+}
+
+.cb {
+  color: black !important;
+
+  & > * {
+    color: black !important;
+  }
+}
+
+.fw-bold {
+  font-weight: bold;
+}
+
+/*  */
+
+.dp-flex {
+  display: flex;
+}
+
+.fd-c {
+  flex-direction: column;
+}
+
+.jc-sb {
+  justify-content: space-between;
+}
+
+.jc-se {
+  justify-content: space-evenly;
+}
+
+.jc-c {
+  justify-content: center;
+}
+
+.jc-e {
+  justify-content: end;
+}
+
+.ai-s {
+  align-items: start;
+}
+
+.ai-c {
+  align-items: center;
+}
+
+.ai-e {
+  align-items: end;
+}
+
+.fsh-0 {
+  flex-shrink: 0;
+}
+
+.fsh-1 {
+  flex-shrink: 1;
+}
+
+.fgr-0 {
+  flex-grow: 0;
+}
+
+.fgr-1 {
+  flex-grow: 1;
+}
+
+.gap-1 {
+  gap: 0.5rem;
+}
+
+.gap-2 {
+  gap: 1rem;
+}
+
+.gap-3 {
+  gap: 1.5rem;
+}
+
+.gap-4 {
+  gap: 2rem;
+}
+
+*[clickable] {
+  cursor: pointer;
+}
+
+*[noselect] {
+  user-select: none;
+}
+
+*[underlined] {
+  text-decoration: underline;
+}
+
+*[shadow] {
+  filter: var(--nav-text-shadows);
+}
+
+*[consoleheadline] {
+  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, Monaco, Consolas, monospace;
+
+  letter-spacing: 1rem;
+}
+
+.p-1 {
+  padding: 2px;
+}
+
+.p-2 {
+  padding: 0.25rem;
+}
+
+.p-3 {
+  padding: 0.5rem;
+}
+
+.p-4 {
+  padding: 0.75rem;
+}
+
+.p-5 {
+  padding: 1rem;
+}
+
+.w100p {
+  width: 100%;
+}
+
+.h100p {
+  height: 100%;
+}

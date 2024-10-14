@@ -15,7 +15,7 @@ CREATE TABLE
 CREATE TABLE
     skins (
         id INTEGER NOT NULL,
-        code TEXT NOT NULL,
+        code CHAR(27) NOT NULL,
         skin_name VARCHAR(60) NOT NULL,
         created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
         creator INTEGER NOT NULL,

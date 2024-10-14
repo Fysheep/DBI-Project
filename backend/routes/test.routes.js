@@ -124,6 +124,26 @@ async function testBySize(size) {
     );
   });
 
+
+  // [x][x] Aggregate count skins of user
+  const _a1 = await measure(async () => {
+    return db.query(queries.a1);
+  });
+  const a1 = await measure(async () => {
+    return await User.aggregate([
+      {
+        $match: { username: "Fyshi" },
+      },
+      {
+        $project: {
+          _id: 0,
+          username: 1,
+          numOfSkins: { $size: "$skins" },
+        },
+      },
+    ]);
+  });
+
   // [x][x]	Update One
   const _u1 = await measure(async () => {
     return db.run(queries.u1);
@@ -169,6 +189,7 @@ async function testBySize(size) {
         find_filter: _f2[0],
         find_filter_projection: _f3[0],
         find_filter_projection_sort: _f4[0],
+        aggregate: _a1[0],
         update_one: _u1[0],
         update_all: _u2[0],
         delete_one: _d1[0],
@@ -179,6 +200,7 @@ async function testBySize(size) {
         find_filter: f2[0],
         find_filter_projection: f3[0],
         find_filter_projection_sort: f4[0],
+        aggregate: a1[0],
         update_one: u1[0],
         update_all: u2[0],
         delete_one: d1[0],
@@ -191,6 +213,7 @@ async function testBySize(size) {
         find_filter: _f2[1],
         find_filter_projection: _f3[1],
         find_filter_projection_sort: _f4[1],
+        aggregate: _a1[1],
         update_one: _u1[1],
         update_all: _u2[1],
         delete_one: _d1[1],
@@ -201,6 +224,7 @@ async function testBySize(size) {
         find_filter: f2[1],
         find_filter_projection: f3[1],
         find_filter_projection_sort: f4[1],
+        aggregate: a1[1],
         update_one: u1[1],
         update_all: u2[1],
         delete_one: d1[1],
@@ -233,7 +257,7 @@ testRouter.get("/advanced", async function (req, res, next) {
 
     res.json({ 100: ans1, 1000: ans2, 10000: ans3, 100000: ans4 });
   } catch (err) {
-    console.error(`Error while testing`, err.message);
+    console.error(`TESTING ERROR: `, err.message);
     next(err);
   }
 });

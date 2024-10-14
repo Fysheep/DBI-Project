@@ -6,7 +6,7 @@
 
 ---
 
-    	[ ] - 0.5:	Umsetzung auf Atlas-Cloud
+    	[x] - 0.5:	Umsetzung auf Atlas-Cloud
 
     	[ ] - 0.75:	Verwendung eines JSON-Schemas und Tests, mit Schema verletzung
 
@@ -27,13 +27,15 @@
 
 		[ ] - 1: 	Schema mit Referencing
     	[ ]	- 1:    beim Setzen eines Index auf die Mongo-Struktur
-		[ ]	- 0.5: 	Änderung der Abfrage, sodass eine Aggregation notwendig wird
+		[x]	- 0.5: 	Änderung der Abfrage, sodass eine Aggregation notwendig wird
 		
 
 --- 
 # Current Points
+- 2 ¯\\_(ツ)_/¯
 - 2 Laufzeit
 - 1 Model 
-- 2 ¯\\_(ツ)_/¯
+- 0.5 Aggregation
+- 0.5 Atlas Cloud
 
-- = 5 / 12.25
+- = 6 / 12.25

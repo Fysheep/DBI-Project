@@ -10,6 +10,14 @@ const f3 = `SELECT 'id','username' FROM users WHERE country is 'Austria'`;
 // [x]	Find(Filter, Projection, Sorting)
 const f4 = `SELECT 'id','username' FROM users WHERE country is 'Austria' ORDER BY id DESC`;
 
+// [ ]	Aggregation
+const a1 = `SELECT users.username, COUNT(skins.id) AS skin_amount
+FROM users
+LEFT JOIN skins ON users.id = skins.creator
+WHERE users.username = 'Fyshi'
+GROUP BY users.username;
+`;
+
 // [x]	Update One
 const u1 = `UPDATE users SET comp_points = 100 WHERE username is 'Player1'`;
 
@@ -22,4 +30,4 @@ const d1 = `DELETE FROM users WHERE username is 'Player0'`;
 // [x]	Delete All
 const d2 = `DELETE FROM users`;
 
-export default { f1, f2, f3, f4, u1, u2, d1, d2 };
+export default { f1, f2, f3, f4, a1, u1, u2, d1, d2 };

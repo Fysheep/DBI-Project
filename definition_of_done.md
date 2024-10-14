@@ -12,8 +12,6 @@
 
    		[ ] - 1.5:	funktionales Frontend mit Auswahlmöglichkeit (=Filter auf Abfrage)
 
-    	[ ] - 1:	Volltextsuche
-
 ---
 
     Laufzeit vergleiche:
@@ -26,7 +24,7 @@
 
 
 		[ ] - 1: 	Schema mit Referencing
-    	[ ]	- 1:    beim Setzen eines Index auf die Mongo-Struktur
+    	[ ]	- 2:    Volltext Suche
 		[x]	- 0.5: 	Änderung der Abfrage, sodass eine Aggregation notwendig wird
 		
 

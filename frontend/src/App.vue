@@ -19,7 +19,13 @@ export default {
 
 <template>
   <AppNavbar class="jc-sb">
-    <span @click="go('/')" clickable shadow>Sample Project</span>
+    <div class="dp-flex gap-4">
+      <span @click="go('/')" clickable shadow underlined>Trackmania Archive</span>
+      <div class="dp-flex gap-2">
+        <span @click="go('/users')" clickable shadow underlined>Users</span>
+        <span @click="go('/skins')" clickable shadow underlined>Skins</span>
+      </div>
+    </div>
     <div class="dp-flex gap-3">
       <span @click="go_outwards('https://github.com/Fysheep')" clickable underlined shadow> GitHub </span>
     </div>

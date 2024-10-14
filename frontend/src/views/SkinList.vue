@@ -13,6 +13,6 @@ export default {
 
 <template>
   <main class="dp-flex fd-c gap-3">
-    <h1 consoleheadline class="ta-center">Home</h1>
+    <h1 consoleheadline class="ta-center">Skin List</h1>
   </main>
 </template>

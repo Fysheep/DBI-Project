@@ -26,3 +26,21 @@ h1[consoleheadline] {
   font-size: 3rem;
   font-weight: 900;
 }
+
+button {
+  background-color: white;
+  color: black;
+  filter:drop-shadow(0 0 3px white);
+
+  transition: linear .15s all;
+
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.4rem;
+}
+
+button:hover {
+  filter:drop-shadow(0 0 3px black);
+  background-color: black;
+  color: white;
+}

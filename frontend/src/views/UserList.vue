@@ -1,11 +1,11 @@
 <script lang="ts">
 import axios from 'axios';
-import { Pen, Pencil, Trash } from 'lucide-vue-next';
+import { Pencil, Trash } from 'lucide-vue-next';
 
 
 export default {
   components: {
-    Pen, Pencil, Trash
+    Pencil, Trash
   },
   data() {
     return {

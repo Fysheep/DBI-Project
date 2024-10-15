@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE
     users (
         id INTEGER NOT NULL,
-        username VARCHAR(25) NOT NULL UNIQUE,
+        username VARCHAR(25) NOT NULL,
         country TEXT NOT NULL,
         comp_points INTEGER DEFAULT 0 NOT NULL,
         created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,

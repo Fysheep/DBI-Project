@@ -7,7 +7,7 @@ noSQLrouter.get("/users/search", async function (req, res, next) {
   try {
     const term = req.query.s;
     if (!term || term.trim() == "") {
-      res.json(await User.find({}).limit(100));
+      res.json(await User.find({}).limit(50));
       return;
     }
 
@@ -66,6 +66,21 @@ noSQLrouter.post("/users/edit", async function (req, res, next) {
     };
 
     res.json(await User.updateOne({ _id: user._id }, { $set: mappedUser }));
+  } catch (err) {
+    console.error(`Error in DELETE USER `, err.message);
+    next(err);
+  }
+});
+
+noSQLrouter.post("/users/edit", async function (req, res, next) {
+  try {
+    const user = req.body;
+    const mappedUser = {
+      username: user.username,
+      country: user.country,
+    };
+
+    res.json(await User.insertMany([mappedUser]));
   } catch (err) {
     console.error(`Error in DELETE USER `, err.message);
     next(err);

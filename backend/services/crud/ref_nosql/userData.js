@@ -115,12 +115,12 @@ const defaultSkins = [
   {
     code: "FF5733-33FF57-3357FF-000000",
     name: "Furious Morgan",
-    username: "Fast Jack",
+    username: "FastJack",
   },
   {
     code: "FF3333-000000-33FFFF-5733FF",
     name: "Mr. Wroom",
-    username: "Fast Jack",
+    username: "FastJack",
   },
   {
     code: "33FF57-FFFFFF-57FF33-5733FF",

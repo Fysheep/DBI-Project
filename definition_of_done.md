@@ -19,7 +19,7 @@
 				[x]	DeleteMany({})
 
 
-		[ ] - 1: 	Schema mit Referencing
+		[x] - 1: 	Schema mit Referencing
     	[x]	- 2:    Volltext Suche
 		[x]	- 0.5: 	Änderung der Abfrage, sodass eine Aggregation notwendig wird
 		
@@ -34,5 +34,6 @@
 - 0.5 Atlas Cloud
 - 2 Volltextsuche
 - 1.5 Frontend
+- 1 Referencing
 
-- = 10.5 / 12.25
+- = 11.5 / 12.25

@@ -39,6 +39,7 @@ async function reset() {
  * Puts [Amount] of Users into the MongoDB
  * */
 async function insertNoSQL(amount) {
+  const start = Date.now();
   const usersToInsert = [];
 
   for (let i = 0; i < amount; i++) {
@@ -47,36 +48,87 @@ async function insertNoSQL(amount) {
     usersToInsert.push(user);
   }
 
-  await User.insertMany(usersToInsert);
+  await User.insertMany(usersToInsert, {
+    validateBeforeSave: false,
+    ordered: false,
+  });
+  return Date.now() - start;
 }
 
 /**
  * Puts [Amount] of Users into the Referencing MongoDB
  * */
 async function insertRefNoSQL(amount) {
-  for (let i = 0; i < amount; i++) {
-    const user =
-      refnosqlTestData.defaultUsers[i % refnosqlTestData.defaultUsers.length]; // Modulo to loop over dataset
-    const insertedUser = await RefUser.create(user);
+  const start = Date.now();
 
+  const usersToInsert = [];
+  for (let i = 0; i < amount; i++) {
+    const userTemplate =
+      refnosqlTestData.defaultUsers[i % refnosqlTestData.defaultUsers.length];
+    usersToInsert.push({ ...userTemplate });
+  }
+
+  const insertedUsers = await RefUser.insertMany(usersToInsert, {
+    ordered: false,
+  });
+
+  const skinsToInsert = [];
+  for (const user of insertedUsers) {
     const skinsForUser = refnosqlTestData.defaultSkins.filter(
       (skin) => skin.username === user.username
     );
-    const skinsToInsert = skinsForUser.map((skin) => ({
+
+    const userSkins = skinsForUser.map((skin) => ({
       code: skin.code,
       name: skin.name,
-      creatorId: insertedUser._id, // Reference to the user
+      creatorId: user._id,
     }));
 
-    await RefSkin.insertMany(skinsToInsert);
+    skinsToInsert.push(...userSkins);
   }
+
+  if (skinsToInsert.length > 0) {
+    await RefSkin.insertMany(skinsToInsert, {
+      validateBeforeSave: false,
+      ordered: false,
+    });
+  }
+
+  return Date.now() - start;
 }
 
 /**
  * Puts [Amount] of Users into the SQLite Database
  * */
 function insertSQL(amount) {
-  
+  const start = Date.now();
+
+  const userArray = [];
+  const skinArray = [];
+  for (let i = 1; i <= amount; i++) {
+    const userTemp =
+      refnosqlTestData.defaultUsers[
+        (i - 1) % refnosqlTestData.defaultUsers.length
+      ]; // Modulo to loop over dataset
+
+    const user = `('${userTemp.username}', '${userTemp.country}')`;
+    const skins = refnosqlTestData.defaultSkins
+      .filter((f) => f.username == userTemp.username)
+      .map((m) => `('${m.code}', '${m.name}', ${i})`);
+
+    userArray.push(user);
+    skinArray.push(skins);
+  }
+
+  db.run(
+    `INSERT INTO users (username, country) VALUES ${userArray.join(",")};`
+  );
+  db.run(
+    `INSERT INTO skins (code, skin_name, creator) VALUES ${skinArray.join(
+      ","
+    )};`
+  );
+  return Date.now() - start;
 }
 
 async function measure(f) {
@@ -87,9 +139,9 @@ async function measure(f) {
 
 async function testBySize(size) {
   await reset();
-  await insertNoSQL(size);
-  await insertRefNoSQL(size);
-  insertSQL(size);
+  const create_nosql = await insertNoSQL(size);
+  const create_ref_nosql = await insertRefNoSQL(size);
+  const create_sql = insertSQL(size);
 
   // [x][x] Find({})
   const _f1 = await measure(async () => {
@@ -97,6 +149,9 @@ async function testBySize(size) {
   });
   const f1 = await measure(async () => {
     return await User.find({});
+  });
+  const ref_f1 = await measure(async () => {
+    return await RefUser.find({});
   });
 
   // [x][x] Find(Filter)
@@ -106,6 +161,9 @@ async function testBySize(size) {
   const f2 = await measure(async () => {
     return await User.find({ country: "Austria" });
   });
+  const ref_f2 = await measure(async () => {
+    return await RefUser.find({ country: "Austria" });
+  });
 
   // [x][x]	Find(Filter, Projection)
   const _f3 = await measure(async () => {
@@ -113,6 +171,9 @@ async function testBySize(size) {
   });
   const f3 = await measure(async () => {
     return await User.find({ country: "Austria" }, { id: 1, username: 1 });
+  });
+  const ref_f3 = await measure(async () => {
+    return await RefUser.find({ country: "Austria" }, { id: 1, username: 1 });
   });
 
   // [x][x]	Find(Filter, Projection, Sorting)
@@ -125,6 +186,14 @@ async function testBySize(size) {
         _id: -1,
       }
     );
+  });
+  const ref_f4 = await measure(async () => {
+    return await RefUser.find(
+      { country: "Austria" },
+      { id: 1, username: 1 }
+    ).sort({
+      _id: -1,
+    });
   });
 
   // [x][x] Aggregate count skins of user
@@ -145,13 +214,58 @@ async function testBySize(size) {
       },
     ]);
   });
+  const ref_a1 = await measure(async () => {
+    return await RefSkin.aggregate([
+      {
+        $lookup: {
+          from: "refusers", 
+          localField: "creatorId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $match: { "user.username": "Fyshi" } },
+      {
+        $group: {
+          _id: "$creatorId",
+          username: { $first: "$user.username" },
+          numOfSkins: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          username: { $arrayElemAt: ["$username", 0] },
+          numOfSkins: 1,
+        },
+      },
+    ]);
+  });
 
+  // [x][x] Indexed Volltextsuche
   const _t1 = await measure(async () => {
     return db.query(queries.t1);
   });
-
   const t1 = await measure(async () => {
     return await User.aggregate([
+      {
+        $search: {
+          index: "volltextsuche",
+          text: {
+            query: "Austria",
+            path: {
+              wildcard: "*",
+            },
+            fuzzy: {
+              maxEdits: 2,
+            },
+          },
+        },
+      },
+    ]);
+  });
+  const ref_t1 = await measure(async () => {
+    return await RefUser.aggregate([
       {
         $search: {
           index: "volltextsuche",
@@ -171,37 +285,54 @@ async function testBySize(size) {
 
   // [x][x]	Update One
   const _u1 = await measure(async () => {
-    return db.run(queries.u1);
+    db.run(queries.u1);
   });
   const u1 = await measure(async () => {
     return await User.updateOne(
-      { username: "Player1" },
+      { username: "Fyshi" },
+      { $set: { comp_points: 100 } }
+    );
+  });
+  const ref_u1 = await measure(async () => {
+    return await RefUser.updateOne(
+      { username: "Fyshi" },
       { $set: { comp_points: 100 } }
     );
   });
 
   // [x][x]	Update All
   const _u2 = await measure(async () => {
-    return db.run(queries.u2);
+    db.run(queries.u2);
   });
   const u2 = await measure(async () => {
     return await User.updateMany({}, { $set: { comp_points: 999 } });
   });
+  const ref_u2 = await measure(async () => {
+    return await RefUser.updateMany({}, { $set: { comp_points: 999 } });
+  });
 
   // [x][x]	Delete One
   const _d1 = await measure(async () => {
-    return db.run(queries.d1);
+    db.run(queries.d1[0]);
+    db.run(queries.d1[1]);
   });
   const d1 = await measure(async () => {
-    return await User.deleteOne({ username: "Player0" });
+    return await User.deleteOne({ username: "Fyshi" });
+  });
+  const ref_d1 = await measure(async () => {
+    return await RefUser.deleteOne({ username: "Fyshi" });
   });
 
   // [x][x]	Delete All
   const _d2 = await measure(async () => {
-    return db.run(queries.d2);
+    db.run(queries.d2[0]);
+    db.run(queries.d2[1]);
   });
   const d2 = await measure(async () => {
     return await User.deleteMany({});
+  });
+  const ref_d2 = await measure(async () => {
+    return await RefUser.deleteMany({});
   });
 
   await reset();
@@ -210,6 +341,7 @@ async function testBySize(size) {
     size: size,
     times: {
       sql: {
+        inserts: create_sql,
         find_all: _f1[0],
         find_filter: _f2[0],
         find_filter_projection: _f3[0],
@@ -222,6 +354,7 @@ async function testBySize(size) {
         delete_all: _d2[0],
       },
       nosql: {
+        inserts: create_nosql,
         find_all: f1[0],
         find_filter: f2[0],
         find_filter_projection: f3[0],
@@ -234,6 +367,7 @@ async function testBySize(size) {
         delete_all: d2[0],
       },
       ref_nosql: {
+        inserts: create_ref_nosql,
         find_all: ref_f1[0],
         find_filter: ref_f2[0],
         find_filter_projection: ref_f3[0],
@@ -303,13 +437,16 @@ testRouter.get("/basic", async function (req, res, next) {
 
 testRouter.get("/advanced", async function (req, res, next) {
   try {
-    const ans1 = await testBySize(100);
-    const ans2 = await testBySize(1000);
-    const ans3 = await testBySize(10000);
-    /* Too Much (takes ~ 5 minutes) */
-    /* const ans4 = await testBySize(100000); */
+    const answers = {
+      100: await testBySize(100),
+      1_000: await testBySize(1_000),
+      10_000: await testBySize(10_000),
+      
+      /* Too Much (takes ~ 5 minutes) */
+      /* 100_000: await testBySize(100_000) */
+    };
 
-    res.json({ 100: ans1, 1000: ans2, 10000: ans3, 100000: ans4 });
+    res.json({ ...answers });
   } catch (err) {
     console.error(`TESTING ERROR: `, err.message);
     next(err);

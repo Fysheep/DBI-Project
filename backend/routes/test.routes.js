@@ -124,7 +124,6 @@ async function testBySize(size) {
     );
   });
 
-
   // [x][x] Aggregate count skins of user
   const _a1 = await measure(async () => {
     return db.query(queries.a1);
@@ -139,6 +138,30 @@ async function testBySize(size) {
           _id: 0,
           username: 1,
           numOfSkins: { $size: "$skins" },
+        },
+      },
+    ]);
+  });
+
+
+  const _t1 = await measure(async () => {
+    return db.query(queries.t1);
+  });
+
+  const t1 = await measure(async () => {
+    return await User.aggregate([
+      {
+        $search: {
+          index: "volltextsuche",
+          text: {
+            query: "Austria",
+            path: {
+              wildcard: "*",
+            },
+            fuzzy: {
+              maxEdits: 2,
+            },
+          },
         },
       },
     ]);
@@ -190,6 +213,7 @@ async function testBySize(size) {
         find_filter_projection: _f3[0],
         find_filter_projection_sort: _f4[0],
         aggregate: _a1[0],
+        text_search: _t1[0],
         update_one: _u1[0],
         update_all: _u2[0],
         delete_one: _d1[0],
@@ -201,6 +225,7 @@ async function testBySize(size) {
         find_filter_projection: f3[0],
         find_filter_projection_sort: f4[0],
         aggregate: a1[0],
+        text_search: t1[0],
         update_one: u1[0],
         update_all: u2[0],
         delete_one: d1[0],
@@ -214,6 +239,7 @@ async function testBySize(size) {
         find_filter_projection: _f3[1],
         find_filter_projection_sort: _f4[1],
         aggregate: _a1[1],
+        text_search: _t1[1],
         update_one: _u1[1],
         update_all: _u2[1],
         delete_one: _d1[1],
@@ -225,6 +251,7 @@ async function testBySize(size) {
         find_filter_projection: f3[1],
         find_filter_projection_sort: f4[1],
         aggregate: a1[1],
+        text_search: t1[1],
         update_one: u1[1],
         update_all: u2[1],
         delete_one: d1[1],

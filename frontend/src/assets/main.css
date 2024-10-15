@@ -22,6 +22,34 @@ main {
   padding: 1rem;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+input,
+.input {
+  border-radius: 1rem;
+  border: none;
+  background-color: white;
+  filter: drop-shadow(0 0 3px white);
+  color: black;
+  height: calc(100%);
+}
+
+input {
+  padding-left: 0.5rem !important;
+}
+
+input:focus {
+  border: none;
+  outline: none;
+}
+
 h1[consoleheadline] {
   font-size: 3rem;
   font-weight: 900;
@@ -30,9 +58,9 @@ h1[consoleheadline] {
 button {
   background-color: white;
   color: black;
-  filter:drop-shadow(0 0 3px white);
+  filter: drop-shadow(0 0 3px white);
 
-  transition: linear .15s all;
+  transition: linear 0.15s all;
 
   border: none;
   border-radius: 0.25rem;
@@ -40,7 +68,34 @@ button {
 }
 
 button:hover {
-  filter:drop-shadow(0 0 3px black);
+  filter: drop-shadow(0 0 3px black);
   background-color: black;
   color: white;
+}
+
+table tbody {
+  tr td {
+    outline: white solid 2px;
+    padding: 0.3rem;
+  }
+
+  tr:first-child {
+    td:first-child {
+      border-top-left-radius: 0.5rem;
+    }
+
+    td:last-child {
+      border-top-right-radius: 0.5rem;
+    }
+  }
+
+  tr:last-child {
+    td:first-child {
+      border-bottom-left-radius: 0.5rem;
+    }
+
+    td:last-child {
+      border-bottom-right-radius: 0.5rem;
+    }
+  }
 }

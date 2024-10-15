@@ -1,16 +1,11 @@
 {
-  "_id": "OBJECTID",
-  "username": "Fyshi",
-  "country": "Austria",
+  "username": "",
+  "country": "",
   "comp_points": 0,
   "skins": [
     {
-      "code": "FFFFFF-000000-000000-000000",
-      "name": "Black Mamba"
-    },
-    {
-      "code": "000000-FFFFFF-FFFFFF-FFFFFF",
-      "name": "White Mamba"
+      "code": "000000-000000-000000-000000",
+      "name": ""
     }
   ]
 }

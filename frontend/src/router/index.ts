@@ -17,6 +17,11 @@ const router = createRouter({
       path: '/skins',
       name: 'skin-list',
       component: () => import('@/views/SkinList.vue')
+    },
+    {
+      path: '/tests',
+      name: 'test-results',
+      component: () => import('@/views/TestResults.vue')
     }
   ]
 })

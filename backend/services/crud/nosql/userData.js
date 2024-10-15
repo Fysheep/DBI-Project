@@ -135,4 +135,4 @@ const defaultUsers = [
     ],
   },
 ];
-export { defaultUsers };
+export default { defaultUsers };

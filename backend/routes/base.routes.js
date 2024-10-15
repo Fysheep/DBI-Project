@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../services/sql.js";
 import User from "../services/crud/nosql/users.js";
-import { defaultUsers } from "../services/crud/nosql/userData.js";
+import testData from "../services/crud/nosql/userData.js";
 import fs from "node:fs";
 
 const baseRouter = express.Router();
@@ -47,7 +47,7 @@ baseRouter.get("/base", async function (req, res, next) {
     });
 
     //insert base NoSQL (bit more complicated, because of unknown Object IDS)
-    await User.insertMany(defaultUsers);
+    await User.insertMany(testData.defaultUsers);
 
     res.json({ message: "done" });
   } catch (err) {

@@ -28,6 +28,8 @@ export default {
       </div>
     </div>
     <div class="dp-flex gap-3">
+      <span @click="go_outwards('https://cloud.mongodb.com/v2/670ce2606bd7a919a3f14791#/overview')" clickable underlined
+        shadow> Cloud Cluster </span>
       <span @click="go_outwards('https://github.com/Fysheep')" clickable underlined shadow> GitHub </span>
     </div>
   </AppNavbar>

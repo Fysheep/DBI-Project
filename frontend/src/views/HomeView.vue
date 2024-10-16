@@ -55,5 +55,38 @@ export default {
         the skins table into our users table which creates a Schema as seen on the ( LEFT ).
       </p>
     </div>
+    <h1 class="ta-center"> NoSQL / SQL Differences</h1>
+    <div class="dp-flex jc-c gap-4">
+      <div class="para-card dp-flex fd-c jc-c">
+        <img src="../assets/img/MongoVsSqLite.png" class="blue-shadow">
+      </div>
+      <div class="para-card dp-flex fd-c ai-c">
+        <p>
+          By using MongoDB, we can ignore old-school problems like varchar sizes, decimal specifications and when using
+          it
+          with embedded objects, we can also scrape off the primary key and foreign key in some scenarios
+        </p>
+        <p>
+          However, because this project uses SQLite for comparison, SQL seems a lot more sexy when comparing the
+          performance tests. Lucky for NoSQL enjoyers, this is just a false sense of security, because there is near 0
+          scaling possibility. SQLite saves all tables in a file, which means that it can only be accessed via one
+          controller. Read and Write speed on the file system is very important here, aswell as Random Access Memory
+          Speed for working with that data. Because of the supplied info, there is no horizontal scaling, just vertical
+          scaling (which has a limit and is unpredictably cost-intensive).
+        </p>
+        <p>
+          Another Thing that might clear up confusion on the performance tests is that the mongodb tests are being done
+          on the atlas-cloud with atlas search. This means that the time of mongo contains: latency, index creation, (no
+          use of RAM, rather CPU which is slower), use of mongoose which health-checks the documents before insertion etc.
+        </p>
+      </div>
+    </div>
   </main>
 </template>
+
+<style scoped>
+.blue-shadow {
+  filter: drop-shadow(0 0 10px #32475B);
+  border-radius: 1rem;
+}
+</style>

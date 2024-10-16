@@ -72,15 +72,17 @@ noSQLrouter.post("/users/edit", async function (req, res, next) {
   }
 });
 
-noSQLrouter.post("/users/edit", async function (req, res, next) {
+noSQLrouter.post("/users/create", async function (req, res, next) {
   try {
     const user = req.body;
     const mappedUser = {
       username: user.username,
       country: user.country,
+      comp_points: user.comp_points,
+      skins: user.skins,
     };
 
-    res.json(await User.insertMany([mappedUser]));
+    res.json(await User.create(mappedUser));
   } catch (err) {
     console.error(`Error in DELETE USER `, err.message);
     next(err);

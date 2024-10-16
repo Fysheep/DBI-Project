@@ -1,15 +1,16 @@
 <script lang="ts">
 import axios from 'axios';
-import { Pencil, Trash, Eye, PlusCircle, Search, Filter as FilterIcon } from 'lucide-vue-next';
+import { Pencil, Trash, Eye, PlusCircle, Search, Filter as FilterIcon, XCircle } from 'lucide-vue-next';
 import type { user } from '@/model/schema';
 import PopUp from '@/components/PopUp.vue';
+import { toRaw } from 'vue';
 
 axios.defaults.baseURL = "http://localhost:8001"
 
 
 export default {
   components: {
-    Pencil, Trash, Eye, PlusCircle, Search, FilterIcon, PopUp
+    Pencil, Trash, Eye, PlusCircle, Search, FilterIcon, XCircle, PopUp
   },
   data() {
     return {
@@ -51,9 +52,15 @@ export default {
 
       this.getData()
     },
+    async createUser() {
+      this.hidePopups()
+      await axios.post(`/nosql/users/create`, this.currentUser)
+
+      this.getData()
+    },
     openEdit(user: user) {
       this.hidePopups()
-      this.currentUser = user;
+      this.currentUser = structuredClone(toRaw(user));
       this.popups.edit_active = true
     },
     openDelete(id: string) {
@@ -68,7 +75,7 @@ export default {
     },
     openCreate() {
       this.hidePopups()
-      this.currentUser = {} as user
+      this.currentUser = { skins: [] as any[] } as user
       this.popups.create_active = true
     }
   }
@@ -87,6 +94,9 @@ export default {
         </button>
       </div>
       <div class="dp-flex gap-custom">
+        <span class="dp-flex jc-c ai-c input h100 p-1" id="clearbutton" clickable @click="search_term = ''; getData()">
+          <XCircle color="black" id="clearicon" stroke-width="2.5px" :size="20" />
+        </span>
         <input type=" text" name="" id="search" class="p-1" placeholder="Search..." v-model="search_term"
           @keydown.enter="getData">
         <span class="dp-flex jc-c ai-c input h100 p-1" id="filterbutton" clickable>
@@ -124,13 +134,95 @@ export default {
     </table>
   </main>
   <PopUp v-if="popups.create_active" @close="popups.create_active = false">
-    Create
+    <div class="dp-flex fd-c gap-2 popup">
+      <h1 class="ta-center">Create User</h1>
+      <span class="dp-flex jc-sb gap-4">
+        User: <input type="text" v-model="currentUser.username">
+      </span>
+      <span class="dp-flex jc-sb gap-4">
+        Country: <input type="text" v-model="currentUser.country">
+      </span>
+      <span class="dp-flex jc-sb gap-4">
+        Competitive Points: <input type="number" v-model="currentUser.comp_points">
+      </span>
+      <span class="dp-flex gap-4 jc-sb">
+        Skins:
+        <div class="dp-flex fd-c gap-2">
+          <table>
+            <tbody>
+              <tr>
+                <td>Name</td>
+                <td>Code</td>
+              </tr>
+              <tr v-for="(skin, index) in currentUser.skins" :key="index">
+                <td> <input type="text" v-model="skin.name"></td>
+                <td><input type="text" v-model="skin.code" class="skincode-input"></td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <span class="dp-flex ai-c jc-sb" clickable @click="currentUser.skins.push({ code: '', name: '' })">
+                    Add Skin
+                    <PlusCircle color="lightgreen" />
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </span>
+      <span class="dp-flex jc-e">
+        <button @click="createUser">Save & Exit</button>
+      </span>
+    </div>
   </PopUp>
   <PopUp v-if="popups.edit_active" @close="popups.edit_active = false">
-    Edit
+    <div class="dp-flex fd-c gap-2 popup">
+      <h1 class="ta-center">Edit User</h1>
+      <span class="dp-flex jc-sb gap-4">
+        User: <input type="text" v-model="currentUser.username">
+      </span>
+      <span class="dp-flex jc-sb gap-4">
+        Country: <input type="text" v-model="currentUser.country">
+      </span>
+      <span class="dp-flex jc-sb gap-4">
+        Competitive Points: <input type="number" v-model="currentUser.comp_points">
+      </span>
+      <span class="dp-flex jc-sb gap-4">
+        Registered since: <span>{{ new Date(currentUser.createdAt).toLocaleDateString() }}</span>
+      </span>
+      <span class="dp-flex gap-4 jc-sb">
+        Skins:
+        <div class="dp-flex fd-c gap-2">
+          <table>
+            <tbody>
+              <tr>
+                <td>Name</td>
+                <td>Code</td>
+              </tr>
+              <tr v-for="(skin, index) in currentUser.skins" :key="index">
+                <td> <input type="text" v-model="skin.name"></td>
+                <td><input type="text" v-model="skin.code" class="skincode-input ta-center"
+                    placeholder="XXXXXX-XXXXXX-XXXXXX-XXXXXX"></td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <span class="dp-flex ai-c jc-sb" clickable @click="currentUser.skins.push({ code: '', name: '' })">
+                    Add Skin
+                    <PlusCircle color="lightgreen" />
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </span>
+      <span class="dp-flex jc-e">
+        <button @click="editUser">Save & Exit</button>
+      </span>
+    </div>
   </PopUp>
   <PopUp v-if="popups.remove_active" @close="popups.remove_active = false">
-    <div class="dp-flex fd-c gap-2">
+    <div class="dp-flex fd-c gap-2 popup">
       <h2 class="ta-center">Are you Sure?</h2>
       <span>Pressing "Yes, Delete" will permanently
         <br> remove this user from the system</span>
@@ -141,17 +233,21 @@ export default {
     </div>
   </PopUp>
   <PopUp v-if="popups.view_active" @close="popups.view_active = false">
-    <div class="dp-flex fd-c gap-2">
-      <span>
-        User: {{ currentUser.username }}
+    <div class="dp-flex fd-c gap-2 popup">
+      <h1 class="ta-center">View User</h1>
+      <span class="dp-flex jc-sb gap-4">
+        User: <span>{{ currentUser.username }}</span>
       </span>
-      <span>
-        Country: {{ currentUser.country }}
+      <span class="dp-flex jc-sb gap-4">
+        Country: <span>{{ currentUser.country }}</span>
       </span>
-      <span>
-        Competitive Points: {{ currentUser.comp_points }}
+      <span class="dp-flex jc-sb gap-4">
+        Competitive Points: <span>{{ currentUser.comp_points }}</span>
       </span>
-      <span class="dp-flex gap-2">
+      <span class="dp-flex jc-sb gap-4">
+        Registered since: <span> {{ new Date(currentUser.createdAt).toLocaleDateString() }}</span>
+      </span>
+      <span class="dp-flex gap-4 jc-sb">
         Skins:
         <div class="dp-flex fd-c gap-2">
           <table>
@@ -173,6 +269,21 @@ export default {
 </template>
 
 <style scoped>
+.popup input {
+  border-radius: 0;
+  margin: 0;
+  padding-left: .2rem !important;
+}
+
+.popup td:has(input) {
+  padding: 2px;
+  padding-top: 1px;
+}
+
+.skincode-input {
+  min-width: 220px
+}
+
 .skin-object {
   padding: .5rem;
   border-radius: 1rem;
@@ -193,8 +304,13 @@ export default {
 }
 
 input#search {
+  border-radius: 0;
+}
+
+#clearbutton {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+  width: 2rem
 }
 
 #searchbutton {

@@ -5,7 +5,7 @@ const defaultUsers = [
     comp_points: 0,
   },
   {
-    username: "Hunter1o1",
+    username: "Hunter",
     country: "Austria",
     comp_points: 0,
   },
@@ -110,7 +110,7 @@ const defaultSkins = [
   {
     code: "000000-000000-000000-000000",
     name: "Fast John",
-    username: "Hunter1o1",
+    username: "Hunter",
   },
   {
     code: "FF5733-33FF57-3357FF-000000",

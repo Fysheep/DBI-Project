@@ -3,7 +3,7 @@ INSERT INTO
     users (username, country)
 VALUES
     ('Fyshi', 'Austria'),
-    ('Hunter1o1', 'Austria'),
+    ('Hunter', 'Austria'),
     ('FastJack', 'USA'),
     ('SpeedDemon', 'Canada'),
     ('NitroBlaze', 'Germany'),

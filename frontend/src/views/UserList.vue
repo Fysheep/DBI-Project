@@ -141,11 +141,48 @@ export default {
     </div>
   </PopUp>
   <PopUp v-if="popups.view_active" @close="popups.view_active = false">
-    View
+    <div class="dp-flex fd-c gap-2">
+      <span>
+        User: {{ currentUser.username }}
+      </span>
+      <span>
+        Country: {{ currentUser.country }}
+      </span>
+      <span>
+        Competitive Points: {{ currentUser.comp_points }}
+      </span>
+      <span class="dp-flex gap-2">
+        Skins:
+        <div class="dp-flex fd-c gap-2">
+          <table>
+            <tbody>
+              <tr>
+                <td>Name</td>
+                <td>Code</td>
+              </tr>
+              <tr v-for="(skin, index) in currentUser.skins" :key="index">
+                <td>{{ skin.name }}</td>
+                <td>{{ skin.code }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </span>
+    </div>
   </PopUp>
 </template>
 
 <style scoped>
+.skin-object {
+  padding: .5rem;
+  border-radius: 1rem;
+  box-shadow: inset 0 0 10px red;
+}
+
+.skin-object span {
+  color: black !important;
+}
+
 .gap-custom {
   gap: 3px
 }

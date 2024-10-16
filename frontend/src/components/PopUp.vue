@@ -4,6 +4,21 @@ import { X } from 'lucide-vue-next';
 export default {
     components: {
         X
+    },
+    mounted() {
+        document.addEventListener("keydown", (key: KeyboardEvent) => {
+            if (key.key == "ESC") this.close()
+        })
+    },
+    beforeUnmount() {
+        document.removeEventListener("keydown", (key: KeyboardEvent) => {
+            if (key.key == "ESC") this.close()
+        })
+    },
+    methods: {
+        close() {
+            this.$emit('close')
+        }
     }
 }
 </script>
@@ -12,7 +27,7 @@ export default {
     <div class="popup dp-flex jc-c ai-c">
         <div class="popup-container">
             <slot />
-            <X class="close-icon" clickable @click="$emit('close')" color="red" />
+            <X class="close-icon" clickable @click="close" color="red" />
         </div>
     </div>
 </template>

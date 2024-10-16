@@ -6,7 +6,7 @@ const defaultUsers = [
     skins: [{ code: "FFFFFF-000000-000000-6942ff", name: "Speedy Bertha" }],
   },
   {
-    username: "Hunter1o1",
+    username: "Hunter",
     country: "Austria",
     comp_points: 0,
     skins: [{ code: "000000-000000-000000-000000", name: "Fast John" }],

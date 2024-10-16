@@ -177,3 +177,18 @@
 .h100p {
   height: 100%;
 }
+
+.para-card {
+  background-color: var(--body-bg);
+  filter: drop-shadow(0 0 10px white);
+  padding: 2rem;
+  border-radius: 1rem;
+  max-height: 700px;
+  width: fit-content;
+  text-align: justify;
+  max-width: 400px;
+}
+
+.para-card:has(img) {
+  max-width: 700px;
+}

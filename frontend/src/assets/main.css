@@ -31,23 +31,26 @@ h6 {
   margin: 0;
 }
 
-input,
-.input {
-  border-radius: 1rem;
-  border: none;
-  background-color: white;
-  filter: drop-shadow(0 0 3px white);
-  color: black;
-  height: calc(100%);
-}
-
 input {
-  padding-left: 0.5rem !important;
+  border: none;
+  color: black;
 }
 
 input:focus {
   border: none;
   outline: none;
+}
+
+input.shadow,
+.input {
+  border-radius: 1rem;
+  background-color: white;
+  filter: drop-shadow(0 0 3px white);
+  height: calc(100%);
+}
+
+input.shadow {
+  padding-left: 0.5rem !important;
 }
 
 h1[consoleheadline] {
@@ -69,7 +72,7 @@ button {
 
 button:hover {
   filter: drop-shadow(0 0 10px white);
-  transform: scale(1.1)
+  transform: scale(1.1);
 }
 
 table tbody {

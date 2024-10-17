@@ -1,6 +1,6 @@
 <script lang="ts">
 import axios from 'axios';
-import { Pencil, Trash, Eye, PlusCircle, Search, Filter as FilterIcon, XCircle } from 'lucide-vue-next';
+import { Pencil, Trash, Eye, PlusCircle, Search, Filter as FilterIcon, XCircle, RefreshCcw, LoaderIcon } from 'lucide-vue-next';
 import type { user } from '@/model/schema';
 import PopUp from '@/components/PopUp.vue';
 import { toRaw } from 'vue';
@@ -10,10 +10,11 @@ axios.defaults.baseURL = "http://localhost:8001"
 
 export default {
   components: {
-    Pencil, Trash, Eye, PlusCircle, Search, FilterIcon, XCircle, PopUp
+    Pencil, Trash, Eye, PlusCircle, Search, FilterIcon, XCircle, RefreshCcw, LoaderIcon, PopUp
   },
   data() {
     return {
+      hasData: false,
       users: [] as user[],
       search_term: "",
       lastupdated: 0,
@@ -30,10 +31,12 @@ export default {
       this.popups = { ...this.popAllOff }
     },
     async getData() {
-
+      this.hasData = false
+      this.users = [] as user[];
       const res = await axios.get(`/nosql/users/search?s=${this.search_term}`)
 
       this.users = res.data
+      this.hasData = true;
     },
     async call(endpoint: string) {
       await axios.get(`${endpoint}`)
@@ -87,9 +90,12 @@ export default {
     <h1 consoleheadline class="ta-center">User List</h1>
     <div class="dp-flex jc-sb">
       <div class="dp-flex gap-2 ai-c">
+        <button @click="getData" clickable class="dp-flex jc-c ai-c iconButton">
+          <RefreshCcw :size="24" color="black" />
+        </button>
         <button @click="call('/reset')" clickable>Reset</button>
         <button @click="call('/base')" clickable>Base Data</button>
-        <button @click="openCreate()" clickable id="insertButton" class="dp-flex jc-c ai-c">
+        <button @click="openCreate()" clickable class="dp-flex jc-c ai-c iconButton">
           <PlusCircle :size="24" color="green" />
         </button>
       </div>
@@ -97,7 +103,7 @@ export default {
         <span class="dp-flex jc-c ai-c input h100 p-1" id="clearbutton" clickable @click="search_term = ''; getData()">
           <XCircle color="black" id="clearicon" stroke-width="2.5px" :size="20" />
         </span>
-        <input type=" text" name="" id="search" class="p-1" placeholder="Search..." v-model="search_term"
+        <input type="text" name="" id="search" class="p-1 shadow" placeholder="Search..." v-model="search_term"
           @keydown.enter="getData">
         <span class="dp-flex jc-c ai-c input h100 p-1" id="filterbutton" clickable>
           <FilterIcon id="searchicon" color="black" stroke-width="2.5px" :size="20" />
@@ -107,7 +113,7 @@ export default {
         </span>
       </div>
     </div>
-    <table>
+    <table v-if="hasData">
       <tbody>
         <tr v-for="(user) in users" :key="user._id" class="user">
           <td width="20" class="ta-center">
@@ -132,18 +138,21 @@ export default {
         </tr>
       </tbody>
     </table>
+    <div v-else>
+      <LoaderIcon color="purple" />
+    </div>
   </main>
   <PopUp v-if="popups.create_active" @close="popups.create_active = false">
     <div class="dp-flex fd-c gap-2 popup">
       <h1 class="ta-center">Create User</h1>
       <span class="dp-flex jc-sb gap-4">
-        User: <input type="text" v-model="currentUser.username">
+        User: <input type="text" v-model="currentUser.username" placeholder="...">
       </span>
       <span class="dp-flex jc-sb gap-4">
-        Country: <input type="text" v-model="currentUser.country">
+        Country: <input type="text" v-model="currentUser.country" placeholder="...">
       </span>
       <span class="dp-flex jc-sb gap-4">
-        Competitive Points: <input type="number" v-model="currentUser.comp_points">
+        Competitive Points: <input type="number" v-model="currentUser.comp_points" placeholder="...">
       </span>
       <span class="dp-flex gap-4 jc-sb">
         Skins:
@@ -156,7 +165,8 @@ export default {
               </tr>
               <tr v-for="(skin, index) in currentUser.skins" :key="index">
                 <td> <input type="text" v-model="skin.name"></td>
-                <td><input type="text" v-model="skin.code" class="skincode-input"></td>
+                <td><input type="text" v-model="skin.code" class="skincode-input ta-center"
+                    placeholder="XXXXXX-XXXXXX-XXXXXX-XXXXXX"></td>
               </tr>
               <tr>
                 <td colspan="2">
@@ -171,7 +181,7 @@ export default {
         </div>
       </span>
       <span class="dp-flex jc-e">
-        <button @click="createUser">Save & Exit</button>
+        <button @click="createUser" clickable>Save & Exit</button>
       </span>
     </div>
   </PopUp>
@@ -179,13 +189,13 @@ export default {
     <div class="dp-flex fd-c gap-2 popup">
       <h1 class="ta-center">Edit User</h1>
       <span class="dp-flex jc-sb gap-4">
-        User: <input type="text" v-model="currentUser.username">
+        User: <input type="text" v-model="currentUser.username" placeholder="...">
       </span>
       <span class="dp-flex jc-sb gap-4">
-        Country: <input type="text" v-model="currentUser.country">
+        Country: <input type="text" v-model="currentUser.country" placeholder="...">
       </span>
       <span class="dp-flex jc-sb gap-4">
-        Competitive Points: <input type="number" v-model="currentUser.comp_points">
+        Competitive Points: <input type="number" v-model="currentUser.comp_points" placeholder="...">
       </span>
       <span class="dp-flex jc-sb gap-4">
         Registered since: <span>{{ new Date(currentUser.createdAt).toLocaleDateString() }}</span>
@@ -217,7 +227,7 @@ export default {
         </div>
       </span>
       <span class="dp-flex jc-e">
-        <button @click="editUser">Save & Exit</button>
+        <button @click="editUser" clickable>Save & Exit</button>
       </span>
     </div>
   </PopUp>
@@ -277,7 +287,6 @@ export default {
 
 .popup td:has(input) {
   padding: 2px;
-  padding-top: 1px;
 }
 
 .skincode-input {
@@ -298,7 +307,7 @@ export default {
   gap: 3px
 }
 
-#insertButton {
+.iconButton {
   height: 100%;
   padding: .2rem
 }

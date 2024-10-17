@@ -5,7 +5,7 @@
 ---
 
     	[x] - 0.5:	Umsetzung auf Atlas-Cloud
-    	[ ] - 0.75:	Verwendung eines JSON-Schemas und Tests, mit Schema verletzung
+    	[x] - 0.75:	Verwendung eines JSON-Schemas und Tests, mit Schema verletzung
    		[x] - 1.5:	Frontend mit Auswahlmöglichkeit (=Filter auf Abfrage)
 
 ---
@@ -35,5 +35,6 @@
 - 2 Volltextsuche
 - 1.5 Frontend
 - 1 Referencing
+- 0.75 Verletzung
 
-- = 11.5 / 12.25
+- = 12.25 / 12.25

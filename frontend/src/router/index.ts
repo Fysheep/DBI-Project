@@ -14,11 +14,6 @@ const router = createRouter({
       component: () => import('@/views/UserList.vue')
     },
     {
-      path: '/skins',
-      name: 'skin-list',
-      component: () => import('@/views/SkinList.vue')
-    },
-    {
       path: '/tests',
       name: 'test-results',
       component: () => import('@/views/TestResults.vue')

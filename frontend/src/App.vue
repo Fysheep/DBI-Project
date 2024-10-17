@@ -23,7 +23,6 @@ export default {
       <span @click="go('/')" clickable shadow underlined>Trackmania Archive</span>
       <div class="dp-flex gap-2">
         <span @click="go('/users')" clickable shadow underlined>Users</span>
-        <span @click="go('/skins')" clickable shadow underlined>Skins</span>
         <span @click="go('/tests')" clickable shadow underlined>Tests</span>
       </div>
     </div>

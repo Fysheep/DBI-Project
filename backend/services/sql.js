@@ -1,7 +1,12 @@
 import sqlite from "better-sqlite3";
 import path from "path";
+import fs from "node:fs";
 
-const db = new sqlite(path.resolve("sql/trackmania.db"), {
+const pathResult = path.resolve("sql/trackmania.db");
+
+fs.writeFile(pathResult, "", { flag: "wx" }, () => {});
+
+const db = new sqlite(pathResult, {
   fileMustExist: true,
 });
 

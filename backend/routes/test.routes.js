@@ -1,6 +1,6 @@
 import express from "express";
 
-import Test from "../services/crud/test_saving/tests.js";
+import Test from "../services/mongo_classes/normal/tests.js";
 
 import { testBySize } from "../services/tools/testing.js";
 

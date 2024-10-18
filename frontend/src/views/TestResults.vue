@@ -78,7 +78,7 @@ export default {
       return Object.keys(obj).map(m => obj[m])
     },
     toDateTime(datestring: string) {
-      return `${new Date(datestring).toLocaleDateString()} - ${new Date(datestring).toLocaleTimeString().slice(0, 5)}`
+      return `${new Date(datestring).toLocaleTimeString().slice(0, 5)}/${new Date(datestring).toLocaleDateString()} `
     },
     keys(obj: object) {
       return Object.keys(obj)
@@ -106,8 +106,14 @@ export default {
       const result = this.keys(test).map(m => this.toArr(test[m].times).map((m2: any) => m2[artifact_name])).reduce((a, b) => a.concat(b))
       return result
     },
-    convert(time_orig: number) {
+    to_artifact_field(field: string) {
+      let result = field.replace(/_/g, " ")
 
+      result = result.split(" ").map(m => m.slice(0, 1).toUpperCase() + m.slice(1)).join(" ")
+
+      return result
+    },
+    convert(time_orig: number) {
       const time = { time: time_orig, type: "μs" }
 
       if (time.time > 3_600_000_000) {
@@ -172,7 +178,7 @@ export default {
       <div v-for="(test, index) in test_data" :key="index" class="dp-flex fd-c gap-1 mw-50">
         <span class="dp-flex ai-c jc-sb">
           <ChevronDown color="white" @click="toggle(index)" clickable />
-          Date: {{ toDateTime(test.createdAt) }}
+          {{ toDateTime(test.createdAt) }}
         </span>
         <table class="all-center">
           <tbody>
@@ -188,7 +194,10 @@ export default {
             </tr>
             <tr v-for="(test_artifact, index) in getArtifacts(test).filter(() => visible_tests[index])" :key="index">
               <td>
-                {{ test_artifact }}
+                <span class="dp-flex gap-3 jc-sb">
+                  <span>{{ to_artifact_field(test_artifact) }}</span>
+                  =>
+                </span>
               </td>
               <td v-for="(test_artifact_answer, index) in flatten(test, test_artifact)" :key="index" class="px-3">
                 {{ convert(test_artifact_answer) }}

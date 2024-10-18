@@ -1,9 +1,46 @@
 import express from "express";
-import User from "../services/crud/nosql/users.js";
+import db from "../services/system_controller/sqlite.js";
+import User from "../services/mongo_classes/normal/users.js";
+import testData from "../services/mongo_classes/normal/userData.js";
+import { reset } from "../services/tools/data_manip.js";
+import fs from "node:fs";
 
-const noSQLrouter = express.Router();
+const appRouter = express.Router();
 
-noSQLrouter.get("/users/search", async function (req, res, next) {
+appRouter.get("/reset", async function (req, res, next) {
+  try {
+    //reset
+    await reset();
+    res.json({ message: "done" });
+  } catch (err) {
+    console.error(`Error while resetting `, err.message);
+    next(err);
+  }
+});
+
+appRouter.get("/base", async function (req, res, next) {
+  try {
+    //reset
+    await reset();
+    //insert base SQL
+    fs.readFile("./models/sql/fillDB.sql", "utf8", (err, data) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      db.run(data);
+    });
+
+    await User.insertMany(testData.defaultUsers);
+
+    res.json({ message: "done" });
+  } catch (err) {
+    console.error(`Error while building base `, err.message);
+    next(err);
+  }
+});
+
+appRouter.get("/users/search", async function (req, res, next) {
   try {
     const term = req.query.s;
     if (!term || term.trim() == "") {
@@ -40,7 +77,7 @@ noSQLrouter.get("/users/search", async function (req, res, next) {
   }
 });
 
-noSQLrouter.get("/users", async function (req, res, next) {
+appRouter.get("/users", async function (req, res, next) {
   try {
     res.json(await User.find({}).sort({ comp_points: -1 }));
   } catch (err) {
@@ -49,7 +86,7 @@ noSQLrouter.get("/users", async function (req, res, next) {
   }
 });
 
-noSQLrouter.get("/users/delete", async function (req, res, next) {
+appRouter.get("/users/delete", async function (req, res, next) {
   try {
     const id = req.query.id;
 
@@ -60,7 +97,7 @@ noSQLrouter.get("/users/delete", async function (req, res, next) {
   }
 });
 
-noSQLrouter.post("/users/edit", async function (req, res, next) {
+appRouter.post("/users/edit", async function (req, res, next) {
   try {
     const user = req.body;
     const mappedUser = {
@@ -77,7 +114,7 @@ noSQLrouter.post("/users/edit", async function (req, res, next) {
   }
 });
 
-noSQLrouter.post("/users/create", async function (req, res, next) {
+appRouter.post("/users/create", async function (req, res, next) {
   try {
     const user = req.body;
     const mappedUser = {
@@ -94,4 +131,4 @@ noSQLrouter.post("/users/create", async function (req, res, next) {
   }
 });
 
-export default noSQLrouter;
+export default appRouter;

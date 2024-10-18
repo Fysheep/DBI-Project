@@ -33,7 +33,7 @@ export default {
     async getData() {
       this.hasData = false
       this.users = [] as user[];
-      const res = await axios.get(`/nosql/users/search?s=${this.search_term}`)
+      const res = await axios.get(`/users/search?s=${this.search_term}`)
 
       this.users = res.data
       this.hasData = true;
@@ -45,19 +45,19 @@ export default {
     },
     async deleteUser() {
       this.hidePopups()
-      await axios.get(`/nosql/users/delete?id=${this.currentUser._id}`)
+      await axios.get(`/users/delete?id=${this.currentUser._id}`)
 
       this.getData()
     },
     async editUser() {
       this.hidePopups()
-      await axios.post(`/nosql/users/edit`, this.currentUser)
+      await axios.post(`/users/edit`, this.currentUser)
 
       this.getData()
     },
     async createUser() {
       this.hidePopups()
-      await axios.post(`/nosql/users/create`, this.currentUser)
+      await axios.post(`/users/create`, this.currentUser)
 
       this.getData()
     },

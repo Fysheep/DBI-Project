@@ -1,16 +1,18 @@
-import db from "../sql.js";
-import User from "../crud/nosql/users.js";
-import RefSkin from "../crud/ref_nosql/skins.js";
-import RefUser from "../crud/ref_nosql/users.js";
+import db_sqlite from "../system_controller/sqlite.js";
+import User from "../mongo_classes/normal/users.js";
+import RefSkin from "../mongo_classes/referencing/skins.js";
+import RefUser from "../mongo_classes/referencing/users.js";
 
-import { measure } from "./time.js";
+import { measure, measure_ } from "./time.js";
 import {
   reset,
-  insertSQL,
-  insertNoSQL,
-  insertRefNoSQL,
-  insert_illegalNoSQL,
+  insertSQLite,
+  insertMySQL,
+  insertMongo,
+  insertMongo_r,
+  insertMongo_i,
 } from "./data_manip.js";
+import db_mysql from "../system_controller/mysql.js";
 
 const queries = {
   // [x]  Find({})
@@ -18,9 +20,9 @@ const queries = {
   // [x]  Find(Filter)
   f2: `SELECT * FROM users WHERE country like 'Austria' LIMIT 100;`,
   // [x]  Find(Filter, Projection)
-  f3: `SELECT 'id','username' FROM users WHERE country like 'Austria' LIMIT 100;`,
+  f3: `SELECT id,username FROM users WHERE country like 'Austria' LIMIT 100;`,
   // [x]  Find(Filter, Projection, Sorting)
-  f4: `SELECT 'id','username' FROM users WHERE country is 'Austria' ORDER BY id DESC LIMIT 100;`,
+  f4: `SELECT id,username FROM users WHERE country = 'Austria' ORDER BY id DESC LIMIT 100;`,
   // [x]  Aggregation
   a1: ` SELECT users.username, COUNT(skins.id) AS skin_amount
         FROM users
@@ -36,15 +38,15 @@ const queries = {
   u2: `UPDATE users SET comp_points = 999`,
   // [x]  Delete One
   d1: [
-    `DELETE FROM skins WHERE creator is 1`,
-    `DELETE FROM users WHERE id is 1`,
+    `DELETE FROM skins WHERE creator = 1;`,
+    `DELETE FROM users WHERE id = 1;`,
   ],
   // [x]  Delete All
   d2: [`DELETE FROM skins`, `DELETE FROM users`],
 };
 
-async function measure_sql(size) {
-  //            Keanu Reeves                          Keanu Reeves               Keanu
+async function measureMySQL(size) {
+  //MY-         Keanu Reeves                          Keanu Reeves               Keanu
   //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
   //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
   //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
@@ -57,51 +59,126 @@ async function measure_sql(size) {
   //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves
   //             Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
 
+  const inserts = measure_(() => {
+    insertMySQL(size);
+    return;
+  });
+  // [x][x] Find({})
+  const find_all = measure_(() => {
+    return db_mysql.query(queries.f1);
+  });
+  // [x][x] Find(Filter)
+  const find_filter = measure_(() => {
+    return db_mysql.query(queries.f2);
+  });
+  // [x][x]	Find(Filter, Projection)
+  const find_filter_projection = measure_(() => {
+    return db_mysql.query(queries.f3);
+  });
+  // [x][x]	Find(Filter, Projection, Sorting)
+  const find_filter_projection_sort = measure_(() => {
+    return db_mysql.query(queries.f4);
+  });
+  // [x][x] Aggregate count skins of user
+  const aggregate = measure_(() => {
+    return db_mysql.query(queries.a1);
+  });
+  // [x][x] Indexed Volltextsuche
+  const text_search = measure_(() => {
+    return db_mysql.query(queries.t1);
+  });
+  // [x][x]	Update One
+  const update_one = measure_(() => {
+    db_mysql.run(queries.u1);
+  });
+  // [x][x]	Update All
+  const update_all = measure_(() => {
+    db_mysql.run(queries.u2);
+  });
+  // [x][x]	Delete One
+  const delete_one = measure_(() => {
+    db_mysql.run(queries.d1[0]);
+    db_mysql.run(queries.d1[1]);
+  });
+  // [x][x]	Delete All
+  const delete_all = measure_(() => {
+    db_mysql.run(queries.d2[0]);
+    db_mysql.run(queries.d2[1]);
+  });
+  return {
+    inserts: inserts[0],
+    find_all: find_all[0],
+    find_filter: find_filter[0],
+    find_filter_projection: find_filter_projection[0],
+    find_filter_projection_sort: find_filter_projection_sort[0],
+    aggregate: aggregate[0],
+    text_search: text_search[0],
+    update_one: update_one[0],
+    update_all: update_all[0],
+    delete_one: delete_one[0],
+    delete_all: delete_all[0],
+  };
+}
+
+async function measureSQLite(size) {
+  //            Keanu Reeves                          Keanu Reeves               Keanu
+  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
+  //      Keanu Reeves                      Keanu                   Reeves       Keanu
+  //          Keanu Reeves                  Keanu                   Reeves       Keanu
+  //              Keanu Reeves              Keanu                   Reeves       Keanu
+  //                  Keanu Reeves          Keanu                   Reeves       Keanu
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
+  //  Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu
+  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves  -ite
+  //             Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
+
   const create_sql = await measure(async () => {
-    insertSQL(size);
+    insertSQLite(size);
     return;
   });
   // [x][x] Find({})
   const _f1 = await measure(async () => {
-    return db.query(queries.f1);
+    return db_sqlite.query(queries.f1);
   });
   // [x][x] Find(Filter)
   const _f2 = await measure(async () => {
-    return db.query(queries.f2);
+    return db_sqlite.query(queries.f2);
   });
   // [x][x]	Find(Filter, Projection)
   const _f3 = await measure(async () => {
-    return db.query(queries.f3);
+    return db_sqlite.query(queries.f3);
   });
   // [x][x]	Find(Filter, Projection, Sorting)
   const _f4 = await measure(async () => {
-    return db.query(queries.f4);
+    return db_sqlite.query(queries.f4);
   });
   // [x][x] Aggregate count skins of user
   const _a1 = await measure(async () => {
-    return db.query(queries.a1);
+    return db_sqlite.query(queries.a1);
   });
   // [x][x] Indexed Volltextsuche
   const _t1 = await measure(async () => {
-    return db.query(queries.t1);
+    return db_sqlite.query(queries.t1);
   });
   // [x][x]	Update One
   const _u1 = await measure(async () => {
-    db.run(queries.u1);
+    db_sqlite.run(queries.u1);
   });
   // [x][x]	Update All
   const _u2 = await measure(async () => {
-    db.run(queries.u2);
+    db_sqlite.run(queries.u2);
   });
   // [x][x]	Delete One
   const _d1 = await measure(async () => {
-    db.run(queries.d1[0]);
-    db.run(queries.d1[1]);
+    db_sqlite.run(queries.d1[0]);
+    db_sqlite.run(queries.d1[1]);
   });
   // [x][x]	Delete All
   const _d2 = await measure(async () => {
-    db.run(queries.d2[0]);
-    db.run(queries.d2[1]);
+    db_sqlite.run(queries.d2[0]);
+    db_sqlite.run(queries.d2[1]);
   });
   return {
     inserts: create_sql[0],
@@ -118,7 +195,7 @@ async function measure_sql(size) {
   };
 }
 
-async function measure_nosql(size) {
+async function measureMongo(size) {
   //  Keanu            Keanu              Keanu Keanu Keanu                     Keanu Reeves                          Keanu Reeves               Keanu
   //  Keanu            Keanu          Keanu Reeves Keanu Reeves           Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
   //  Keanues          Keanu       Keanu                   Reeves     Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
@@ -133,7 +210,7 @@ async function measure_nosql(size) {
   //  Keanu            Keanu             Keanu Keanu Keanu                       Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
 
   const create_nosql = await measure(async () => {
-    await insertNoSQL(size);
+    await insertMongo(size);
     return;
   });
   // [x][x] Find({})
@@ -233,7 +310,7 @@ async function measure_nosql(size) {
   };
 }
 
-async function measure_ref_nosql(size) {
+async function measureMongo_r(size) {
   // Keanu Reeves Keanu Reeves  Keanu                                     Keanu                         Keanu Reeves                          Keanu Reeves               Keanu
   // Keanu Reeves Keanu Reeves   Keanu                                   Keanu                    Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
   // Keanu                        Keanu                                 Keanu                 Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
@@ -248,7 +325,7 @@ async function measure_ref_nosql(size) {
   // Keanu Reeves Keanu Reeves               k r               k r                                       Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
 
   const create_ref_nosql = await measure(async () => {
-    await insertRefNoSQL(size);
+    await insertMongo_r(size);
     return;
   });
 
@@ -366,9 +443,9 @@ async function measure_ref_nosql(size) {
   };
 }
 
-async function measure_ill_nosql(size) {
+async function measureMongo_i(size) {
   const create_illegal_nosql = await measure(async () => {
-    return await insert_illegalNoSQL(size);
+    return await insertMongo_i(size);
   });
 
   return { inserts: create_illegal_nosql[0] };
@@ -379,10 +456,11 @@ async function testBySize(size, with_ref = false, with_illegal = false) {
 
   const times = {};
 
-  times.sql = await measure_sql(size);
-  times.nosql = await measure_nosql(size);
-  if (with_ref) times.ref_nosql = await measure_ref_nosql(size);
-  if (with_illegal) times.illegal_nosql = await measure_ill_nosql(size);
+  times.MySQL = await measureMySQL(size);
+  times.SQLite = await measureSQLite(size);
+  times.MongoDB = await measureMongo(size);
+  if (with_ref) times.MongoDB_r = await measureMongo_r(size);
+  if (with_illegal) times.MongoDB_i = await measureMongo_i(size);
 
   await reset();
 

@@ -4,4 +4,10 @@ async function measure(f) {
   return [parseInt(process.hrtime.bigint() - timer) / 1000, ans];
 }
 
-export { measure };
+function measure_(f) {
+  const timer = process.hrtime.bigint();
+  const ans = f();
+  return [parseInt(process.hrtime.bigint() - timer) / 1000, ans];
+}
+
+export { measure, measure_ };

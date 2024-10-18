@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       test_data: [] as any[],
+      visible_tests: [] as boolean[],
 
       is_loading: false,
       dropdownActive: false,
@@ -123,11 +124,14 @@ export default {
         time.type = "ms"
       }
 
-      if (isNaN(time.time)){
+      if (isNaN(time.time)) {
         return "no Value"
       }
 
-        return `${Math.ceil(time.time * 10) / 10} ${time.type}`
+      return `${Math.ceil(time.time * 10) / 10} ${time.type}`
+    },
+    toggle(index: number) {
+      this.visible_tests[index] = !this.visible_tests[index]
     }
   }
 }
@@ -164,22 +168,25 @@ export default {
         </span>
       </div>
     </div>
-    <div id="test-container" class="dp-flex fd-c gap-4 ai-c">
-      <div v-for="(test, index) in test_data" :key="index" class="dp-flex fd-c gap-1">
-        Date: {{ toDateTime(test.createdAt) }}
+    <div id="test-container" class="dp-flex fd-c gap-2 ai-s">
+      <div v-for="(test, index) in test_data" :key="index" class="dp-flex fd-c gap-1 mw-50">
+        <span class="dp-flex ai-c jc-sb">
+          <ChevronDown color="white" @click="toggle(index)" clickable />
+          Date: {{ toDateTime(test.createdAt) }}
+        </span>
         <table class="all-center">
           <tbody>
             <tr>
-              <td>Size</td>
+              <td>Size </td>
               <td :colspan="getColspan(test)" v-for="(key, index) in keys(test.data)" :key="index">{{ key }}</td>
             </tr>
-            <tr>
+            <tr v-if="visible_tests[index]">
               <td>System</td>
               <td v-for="(system, index) in getSystems(test)" :key="index">
                 {{ system }}
               </td>
             </tr>
-            <tr v-for="(test_artifact, index) in getArtifacts(test)" :key="index">
+            <tr v-for="(test_artifact, index) in getArtifacts(test).filter(() => visible_tests[index])" :key="index">
               <td>
                 {{ test_artifact }}
               </td>
@@ -195,11 +202,12 @@ export default {
 </template>
 
 <style scoped>
+.mw-50 {
+  min-width: 50%;
+}
 
 table.all-center td {
   text-align: center;
-  padding-left: 2rem;
-  padding-right: 2rem;
 }
 
 @keyframes spin {

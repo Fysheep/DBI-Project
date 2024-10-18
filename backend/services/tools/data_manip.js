@@ -9,9 +9,7 @@ import nosqlTestData from "../crud/nosql/userData.js";
 import refnosqlTestData from "../crud/ref_nosql/userData.js";
 
 async function delete_NoSQL() {
-  const timer = Date.now();
   await User.deleteMany({});
-  return Date.now() - timer;
 }
 
 async function reset() {

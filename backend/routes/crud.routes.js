@@ -7,7 +7,7 @@ noSQLrouter.get("/users/search", async function (req, res, next) {
   try {
     const term = req.query.s;
     if (!term || term.trim() == "") {
-      res.json(await User.find({}).limit(50));
+      res.json(await User.find({}).sort({ comp_points: -1 }).limit(50));
       return;
     }
 
@@ -26,6 +26,11 @@ noSQLrouter.get("/users/search", async function (req, res, next) {
           },
         },
       },
+      {
+        $sort: {
+          comp_points: -1,
+        },
+      },
     ]);
 
     res.json(users);
@@ -37,7 +42,7 @@ noSQLrouter.get("/users/search", async function (req, res, next) {
 
 noSQLrouter.get("/users", async function (req, res, next) {
   try {
-    res.json(await User.find({}));
+    res.json(await User.find({}).sort({ comp_points: -1 }));
   } catch (err) {
     console.error(`Error in USERS: `, err.message);
     next(err);

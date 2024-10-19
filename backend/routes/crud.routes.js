@@ -20,17 +20,6 @@ appRouter.get("/reset", async function (req, res, next) {
 
 appRouter.get("/base", async function (req, res, next) {
   try {
-    //reset
-    await reset();
-    //insert base SQL
-    fs.readFile("./models/sql/fillDB.sql", "utf8", (err, data) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      db.run(data);
-    });
-
     await User.insertMany(testData.defaultUsers);
 
     res.json({ message: "done" });

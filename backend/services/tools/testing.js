@@ -46,18 +46,18 @@ const queries = {
 };
 
 async function measureMySQL(size) {
-  //MY-         Keanu Reeves                          Keanu Reeves               Keanu
-  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
-  //      Keanu Reeves                      Keanu                   Reeves       Keanu
-  //          Keanu Reeves                  Keanu                   Reeves       Keanu
-  //              Keanu Reeves              Keanu                   Reeves       Keanu
-  //                  Keanu Reeves          Keanu                   Reeves       Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu
-  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves
-  //             Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
+  //  Keanu              Keanu    Reeves              Reeves            Keanu Reeves                          Keanu Reeves               Keanu
+  //  Keanues          ReKeanu      Reeves          Reeves        Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
+  //  Keanueves      ReevKeanu        Reeves      Reeves      Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
+  //  KeanuReeves  ReevesKeanu          Reeves  Reeves        Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
+  //  Keanu  ReeveReeve  Keanu            ReeveReeve              Keanu Reeves                      Keanu                   Reeves       Keanu
+  //  Keanu    Reeves    Keanu              Reeves                    Keanu Reeves                  Keanu                   Reeves       Keanu
+  //  Keanu              Keanu              Reeves                        Keanu Reeves              Keanu                   Reeves       Keanu
+  //  Keanu              Keanu              Reeves                            Keanu Reeves          Keanu                   Reeves       Keanu
+  //  Keanu              Keanu              Reeves            Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
+  //  Keanu              Keanu              Reeves            Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu
+  //  Keanu              Keanu              Reeves                Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves
+  //  Keanu              Keanu              Reeves                       Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
 
   const inserts = measure_(() => {
     insertMySQL(size);
@@ -121,18 +121,18 @@ async function measureMySQL(size) {
 }
 
 async function measureSQLite(size) {
-  //            Keanu Reeves                          Keanu Reeves               Keanu
-  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
-  //      Keanu Reeves                      Keanu                   Reeves       Keanu
-  //          Keanu Reeves                  Keanu                   Reeves       Keanu
-  //              Keanu Reeves              Keanu                   Reeves       Keanu
-  //                  Keanu Reeves          Keanu                   Reeves       Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
-  //  Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu
-  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves  -ite
-  //             Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
+  //            Keanu Reeves                          Keanu Reeves               Keanu                        Keanu    Reeves Keanu Reeves Keanu    Keanu Reeves Keanu Reeves
+  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu                        Keanu    Keanu Reeves Keanu Reeves    Keanu Reeves Keanu Reeves
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
+  //      Keanu Reeves                      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
+  //          Keanu Reeves                  Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu Reeves Keanu       
+  //              Keanu Reeves              Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu Reeves Keanu       
+  //                  Keanu Reeves          Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
+  //  Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu                        Keanu              Keanu              Keanu                    
+  //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves    Keanu              Keanu              Keanu Reeves Keanu Reeves
+  //             Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves    Keanu              Keanu              Keanu Reeves Keanu Reeves
 
   const create_sql = await measure(async () => {
     insertSQLite(size);

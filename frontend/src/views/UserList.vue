@@ -115,12 +115,13 @@ export default {
     </div>
     <table v-if="hasData">
       <tbody>
-        <tr v-for="(user) in users" :key="user._id" class="user">
+        <tr v-for="(user, index) in users" :key="index" class="user">
           <td width="20" class="ta-center">
             <span class="dp-flex ai-c jc-c">
               <Eye :size="20" color="white" @click="openView(user)" clickable />
             </span>
           </td>
+          <td width="20" class="ta-right">{{ index + 1 }}.</td>
           <td width="200">{{ user.username }}</td>
           <td width="200">{{ user.country }}</td>
           <td width="200">{{ user.comp_points }}</td>

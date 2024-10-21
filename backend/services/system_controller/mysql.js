@@ -1,10 +1,10 @@
-import mysql from "mysql2"; // Use the promise-based version for async operations
+import mysql from "mysql2"; 
 
 const db_mysql = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "NheWdBgk^3pksMvWOSM9",
-  database: "trackmania", // Make sure to specify your database here
+  database: "trackmania",
 });
 
 function connect() {
@@ -18,7 +18,6 @@ function disconnect() {
   console.log("(MYSQL) => Closed");
 }
 
-// Example to execute queries, you can use this directly
 db_mysql.run = function (sql, params) {
   return db_mysql.execute(sql, params);
 };

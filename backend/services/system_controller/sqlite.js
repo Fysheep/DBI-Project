@@ -2,7 +2,7 @@ import sqlite from "better-sqlite3";
 import path from "path";
 import fs from "node:fs";
 
-const pathResult = path.resolve("db/trackmania.db");
+const pathResult = path.resolve("trackmania.db");
 
 fs.writeFile(pathResult, "", { flag: "wx" }, () => {});
 

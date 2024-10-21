@@ -1,7 +1,8 @@
-import mysql from "mysql2"; 
+import mysql from "mysql2";
 
 const db_mysql = mysql.createConnection({
   host: "localhost",
+  port: 63636,
   user: "root",
   password: "NheWdBgk^3pksMvWOSM9",
   database: "trackmania",
@@ -9,7 +10,7 @@ const db_mysql = mysql.createConnection({
 
 function connect() {
   db_mysql.connect();
-  console.log("(MYSQL) => Connected");
+  console.log("%c(MYSQL) => Connected", "color:red");
   return db_mysql;
 }
 

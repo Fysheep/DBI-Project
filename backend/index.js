@@ -8,12 +8,13 @@ import bodyParser from "body-parser";
 import { connect as connect_mongo } from "./services/system_controller/mongo.js";
 import { connect as connect_mysql } from "./services/system_controller/mysql.js";
 
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 const port = 8001;
 
-await connect_mysql();
+connect_mysql();
 await connect_mongo();
 
 app.use("/", appRouter);

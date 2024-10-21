@@ -123,14 +123,14 @@ async function measureMySQL(size) {
 async function measureSQLite(size) {
   //            Keanu Reeves                          Keanu Reeves               Keanu                        Keanu    Reeves Keanu Reeves Keanu    Keanu Reeves Keanu Reeves
   //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu                        Keanu    Keanu Reeves Keanu Reeves    Keanu Reeves Keanu Reeves
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
-  //      Keanu Reeves                      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
-  //          Keanu Reeves                  Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu Reeves Keanu       
-  //              Keanu Reeves              Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu Reeves Keanu       
-  //                  Keanu Reeves          Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
-  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu                    
-  //  Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu                        Keanu              Keanu              Keanu                    
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu
+  //      Keanu Reeves                      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu
+  //          Keanu Reeves                  Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu Reeves Keanu
+  //              Keanu Reeves              Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu Reeves Keanu
+  //                  Keanu Reeves          Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu
+  //  Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu                        Keanu              Keanu              Keanu
+  //  Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu                        Keanu              Keanu              Keanu
   //      Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves    Keanu              Keanu              Keanu Reeves Keanu Reeves
   //             Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves    Keanu              Keanu              Keanu Reeves Keanu Reeves
 
@@ -457,10 +457,19 @@ async function testBySize(size, with_ref = false, with_illegal = false) {
   const times = {};
 
   times.MySQL = await measureMySQL(size);
+  console.log(`%c(MYSQL) Tests Finished`, "color:green");
   times.SQLite = await measureSQLite(size);
+  console.log(`%c(SQLITE) Tests Finished`, "color:green");
   times.MongoDB = await measureMongo(size);
-  if (with_ref) times.MongoDB_r = await measureMongo_r(size);
-  if (with_illegal) times.MongoDB_i = await measureMongo_i(size);
+  console.log(`%c(NoSQL) Tests Finished`, "color:green");
+  if (with_ref) {
+    times.MongoDB_r = await measureMongo_r(size);
+    console.log(`%c(Referencing NoSQL) Tests Finished`, "color:green");
+  }
+  if (with_illegal) {
+    times.MongoDB_i = await measureMongo_i(size);
+    console.log(`%c(Illegal Schema) Tests Finished`, "color:green");
+  }
 
   await reset();
 

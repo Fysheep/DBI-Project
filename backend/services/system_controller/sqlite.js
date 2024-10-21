@@ -1,6 +1,8 @@
 import sqlite from "better-sqlite3";
 import path from "path";
 import fs from "node:fs";
+console.clear()
+
 
 const pathResult = path.resolve("trackmania.db");
 

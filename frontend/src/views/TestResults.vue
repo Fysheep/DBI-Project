@@ -206,7 +206,7 @@ export default {
         <table class="all-center">
           <tbody>
             <tr>
-              <td>Size </td>
+              <td></td>
               <td :colspan="getColspan(test)" v-for="(key, index) in keys(test.data)" :key="index">{{ key }}</td>
             </tr>
             <tr v-if="visible_tests[index]">

@@ -1,4 +1,5 @@
 import mysql from "mysql2";
+import cs from "../tools/log.js";
 
 const db_mysql = mysql.createConnection({
   host: "localhost",
@@ -8,20 +9,23 @@ const db_mysql = mysql.createConnection({
   database: "trackmania",
 });
 
-function connect() {
-  db_mysql.connect();
-  console.log("%c(MYSQL) => Connected", "color:red");
-  return db_mysql;
+async function connect() {
+  try {
+    db_mysql.connect();
+
+    cs.log(["magenta", `(MYSQL)`], ["white", `      => `], ["green", `Connected`]);
+  } catch {
+    cs.log(
+      ["magenta", `(SQLITE)`],
+      ["white", `      => `],
+      ["red", `Could not Connect`]
+    );
+  }
 }
 
 function disconnect() {
   db_mysql.end();
-  console.log("(MYSQL) => Closed");
 }
-
-db_mysql.run = function (sql, params) {
-  return db_mysql.execute(sql, params);
-};
 
 export default db_mysql;
 export { connect, disconnect };

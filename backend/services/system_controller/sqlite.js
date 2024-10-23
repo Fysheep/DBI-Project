@@ -1,24 +1,43 @@
 import sqlite from "better-sqlite3";
 import path from "path";
 import fs from "node:fs";
-console.clear()
+import cs from "../tools/log.js";
 
+function genSqlite(db) {
+  db.query = function (sql, params = []) {
+    return db.prepare(sql).all(params);
+  };
 
-const pathResult = path.resolve("trackmania.db");
+  db.run = function (sql) {
+    return db.exec(sql);
+  };
+}
 
-fs.writeFile(pathResult, "", { flag: "wx" }, () => {});
+async function connect() {
+  try {
+    const pathResult = path.resolve("trackmania.db");
 
-const db_sqlite = new sqlite(pathResult, {
-  fileMustExist: true,
-});
-console.log("(SQLITE) => Connected");
+    fs.writeFile(pathResult, "", { flag: "wx" }, () => {});
 
-db_sqlite.query = function (sql, params = []) {
-  return db_sqlite.prepare(sql).all(params);
-};
+    const db_sqlite = new sqlite(pathResult, {
+      fileMustExist: true,
+    });
 
-db_sqlite.run = function (sql) {
-  return db_sqlite.exec(sql);
-};
+    genSqlite(db_sqlite);
 
-export default db_sqlite;
+    cs.log(["magenta", `(SQLITE)`], ["white", `     => `], ["green", `Connected`]);
+
+    return db_sqlite;
+  } catch {
+    cs.log(
+      ["magenta", `(SQLITE)`],
+      ["white", `     => `],
+      ["red", `Could not Connect`]
+    );
+  }
+}
+
+const db = await connect();
+
+export default db;
+export { connect };

@@ -99,11 +99,26 @@ export default {
       return result
     },
     getArtifacts(test: any) {
-      return this.keys(this.getFirst(this.getFirst(test.data).times))
+      return [...this.keys(this.getFirst(this.getFirst(test.data).times)), "sum"] as any
     },
     flatten(test_obj: any, artifact_name: any) {
       const test = test_obj.data;
-      const result = this.keys(test).map(m => this.toArr(test[m].times).map((m2: any) => m2[artifact_name])).reduce((a, b) => a.concat(b))
+
+      if (artifact_name == "sum") {
+        return this.keys(test)
+          .map(m => this.toArr(test[m].times)
+            .map(
+              (m2: any) => this.toArr(m2)
+                .reduce((r1, r2) => r1 + r2))
+          )
+          .reduce((a, b) => a.concat(b))
+      }
+
+      const result = this.keys(test)
+        .map(m => this.toArr(test[m].times)
+          .map((m2: any) => m2[artifact_name]))
+        .reduce((a, b) => a.concat(b))
+
       return result
     },
     to_artifact_field(field: string) {
@@ -135,6 +150,14 @@ export default {
       }
 
       return `${Math.ceil(time.time * 10) / 10} ${time.type}`
+    },
+    getColor(time: number) {
+
+      if (time > 3_600_000_000) return "red"
+      if (time > 60_000_000) return "yellow"
+      if (time > 1_000_000) return "green"
+      if (time > 1_000) return "cyan"
+      if (!isNaN(time)) return "pink"
     },
     toggle(index: number) {
       this.visible_tests[index] = !this.visible_tests[index]
@@ -199,7 +222,8 @@ export default {
                   =>
                 </span>
               </td>
-              <td v-for="(test_artifact_answer, index) in flatten(test, test_artifact)" :key="index" class="px-3">
+              <td v-for="(test_artifact_answer, index) in flatten(test, test_artifact)" :key="index" class="px-3"
+                :class="`color-${getColor(test_artifact_answer)}`">
                 {{ convert(test_artifact_answer) }}
               </td>
             </tr>
@@ -209,6 +233,28 @@ export default {
     </div>
   </main>
 </template>
+
+<style>
+.color-red {
+  color: red
+}
+
+.color-yellow {
+  color: yellow
+}
+
+.color-green {
+  color: lightgreen
+}
+
+.color-cyan {
+  color: cyan
+}
+
+.color-pink {
+  color: magenta
+}
+</style>
 
 <style scoped>
 .mw-50 {

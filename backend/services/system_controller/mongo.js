@@ -1,14 +1,23 @@
 import mongoose from "mongoose";
+import cs from "../tools/log.js";
 
 const connect = async () => {
   try {
     const conn = await mongoose.connect(
-      process.env.MONGO_URI || "mongodb+srv://Fyshi:pMtDYCe3ZMoUXEyd@dbi-cluster0.xykqz.mongodb.net/?retryWrites=true&w=majority&appName=DBI-Cluster0"
+      process.env.MONGO_URI ||
+        "mongodb+srv://Fyshi:pMtDYCe3ZMoUXEyd@dbi-cluster0.xykqz.mongodb.net/?retryWrites=true&w=majority&appName=DBI-Cluster0"
     );
-    console.log(`(MONGODB) => Connected: ${conn.connection.host}`);
+    cs.log(
+      ["magenta", "(MONGODB)"],
+      ["white", "    => "],
+      ["green", `Connected`]
+    );
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1);
+    cs.log(
+      ["magenta", "(MONGODB)"],
+      ["white", "    => "],
+      [("red", "Could not Connect")]
+    );
   }
 };
 

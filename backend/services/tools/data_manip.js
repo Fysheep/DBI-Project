@@ -10,7 +10,11 @@ import db_sqlite from "../system_controller/sqlite.js";
 import db_mysql from "../system_controller/mysql.js";
 
 async function delete_NoSQL() {
-  await User.deleteMany({});
+  return Promise.all([
+    User.deleteMany({}),
+    RefSkin.deleteMany({}),
+    RefUser.deleteMany({}),
+  ]);
 }
 
 async function reset() {
@@ -27,7 +31,7 @@ async function reset() {
       return;
     }
     data.split("--##SPLITTER##--").forEach((f) => {
-      db_mysql.run(f);
+      db_mysql.execute(f);
     });
   });
 
@@ -42,7 +46,7 @@ async function insertMongo(amount, batchSize = 1000) {
   for (let i = 0; i < amount; i++) {
     const user =
       nosqlTestData.defaultUsers[i % nosqlTestData.defaultUsers.length];
-    usersToInsert.push(user);
+    usersToInsert.push({ ...user });
   }
 
   const insertUsersInBatches = async (users, batchSize) => {
@@ -51,7 +55,6 @@ async function insertMongo(amount, batchSize = 1000) {
       const batch = users.slice(i, i + batchSize);
       userBatches.push(
         User.insertMany(batch, {
-          validateBeforeSave: false,
           ordered: false,
         })
       );
@@ -194,14 +197,21 @@ function insertMySQL(amount) {
     skinArray.push(skins);
   }
 
-  db_mysql.run(
+  db_mysql.execute(
     `INSERT INTO users (username, country) VALUES ${userArray.join(",")};`
   );
-  db_mysql.run(
+  db_mysql.execute(
     `INSERT INTO skins (code, skin_name, creator) VALUES ${skinArray.join(
       ","
     )};`
   );
 }
 
-export { reset, insertSQLite, insertMySQL, insertMongo, insertMongo_r, insertMongo_i };
+export {
+  reset,
+  insertSQLite,
+  insertMySQL,
+  insertMongo,
+  insertMongo_r,
+  insertMongo_i,
+};

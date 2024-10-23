@@ -197,7 +197,7 @@ async function measureSQLite(size) {
 }
 
 async function measureMongo(size) {
-  //  Keanu            Keanu              Keanu Keanu Keanu                     Keanu Reeves                          Keanu Reeves               Keanu
+  //  Keanu            Keanu              Keanu Keanu Keanu                      Keanu Reeves                        Keanu Reeves                Keanu
   //  Keanu            Keanu          Keanu Reeves Keanu Reeves           Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu
   //  Keanues          Keanu       Keanu                   Reeves     Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
   //  Keanueves        Keanu       Keanu                   Reeves     Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
@@ -208,7 +208,7 @@ async function measureMongo(size) {
   //  Keanu        ReevKeanu       Keanu                   Reeves     Keanu Reeves        Keanu Reeves      Keanu                   Reeves       Keanu
   //  Keanu          ReKeanu       Keanu                   Reeves     Keanu Reeves        Keanu Reeves      Keanu             Keanu Reeves       Keanu
   //  Keanu            Keanu          Keanu Reeves Keanu Reeves           Keanu Reeves Keanu Reeves            Keanu Reeves Keanu Reeves         Keanu Reeves Keanu Reeves
-  //  Keanu            Keanu             Keanu Keanu Keanu                       Keanu Reeves                         Keanu Reeves   Reeves      Keanu Reeves Keanu Reeves
+  //  Keanu            Keanu              Keanu Keanu Keanu                      Keanu Reeves                        Keanu Reeves    Reeves      Keanu Reeves Keanu Reeves
 
   const create_nosql = await measure(async () => {
     return await insertMongo(size);
@@ -475,8 +475,6 @@ async function testBySize(size, with_ref = false, with_illegal = false) {
     ["yellow", `Tests Done (${toClean(MySQLTotalTime)} ms)`]
   );
 
-  await reset()
-  await sleep(1000)
   const SQLiteTotalTime = await measure(async () => {
     times.SQLite = await measureSQLite(size);
   });
@@ -486,8 +484,6 @@ async function testBySize(size, with_ref = false, with_illegal = false) {
     ["yellow", `Tests Done (${toClean(SQLiteTotalTime)} ms)`]
   );
 
-  await reset()
-  await sleep(1000)
   const MongoDBTotalTime = await measure(async () => {
     times.MongoDB = await measureMongo(size);
   });

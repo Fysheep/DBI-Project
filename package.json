@@ -1,0 +1,9 @@
+{
+  "name": "dbi-project",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run start"
+  }
+}

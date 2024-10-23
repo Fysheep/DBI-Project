@@ -50,6 +50,7 @@ export default {
     },
     basicTestPrompt() {
       this.basic_prompt = !this.basic_prompt;
+      this.$nextTick(() => { document.getElementById("basic-size")!.focus() })
     },
     async test(type: "basic" | "advanced" | "eternity") {
       this.dropdownActive = false;
@@ -131,10 +132,7 @@ export default {
     convert(time_orig: number) {
       const time = { time: time_orig, type: "μs" }
 
-      if (time.time > 3_600_000_000) {
-        time.time = time.time / 3_600_000_000
-        time.type = "h"
-      } else if (time.time > 60_000_000) {
+      if (time.time > 60_000_000) {
         time.time = time.time / 60_000_000
         time.type = "min"
       } else if (time.time > 1_000_000) {
@@ -153,11 +151,10 @@ export default {
     },
     getColor(time: number) {
 
-      if (time > 3_600_000_000) return "red"
-      if (time > 60_000_000) return "yellow"
-      if (time > 1_000_000) return "green"
-      if (time > 1_000) return "cyan"
-      if (!isNaN(time)) return "pink"
+      if (time > 60_000_000) return "red"
+      if (time > 1_000_000) return "orange"
+      if (time > 1_000) return "yellow"
+      if (!isNaN(time)) return "green"
     },
     toggle(index: number) {
       this.visible_tests[index] = !this.visible_tests[index]
@@ -236,7 +233,11 @@ export default {
 
 <style>
 .color-red {
-  color: red
+  color: orangered
+}
+
+.color-orange {
+  color: orange
 }
 
 .color-yellow {
@@ -244,15 +245,7 @@ export default {
 }
 
 .color-green {
-  color: lightgreen
-}
-
-.color-cyan {
-  color: cyan
-}
-
-.color-pink {
-  color: magenta
+  color: greenyellow
 }
 </style>
 

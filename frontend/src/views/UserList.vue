@@ -105,7 +105,7 @@ export default {
         </span>
         <input type="text" name="" id="search" class="p-1 shadow" placeholder="Search..." v-model="search_term"
           @keydown.enter="getData">
-        <span class="dp-flex jc-c ai-c input h100 p-1" id="filterbutton" clickable>
+        <span class="dp-flex jc-c ai-c input h100 p-1" id="filterbutton" clickable v-if="false">
           <FilterIcon id="searchicon" color="black" stroke-width="2.5px" :size="20" />
         </span>
         <span class="dp-flex jc-c ai-c input h100 p-1" id="searchbutton">

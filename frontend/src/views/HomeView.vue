@@ -75,9 +75,30 @@ export default {
           scaling (which has a limit and is unpredictably cost-intensive).
         </p>
         <p>
+          Edit: It appears that after implementing MySQL as a Test-subject, SQLite is not the king of the hill anymore.
+          MySQL destroys the testing times of the other.
+        </p>
+        <p>
           Another Thing that might clear up confusion on the performance tests is that the mongodb tests are being done
           on the atlas-cloud with atlas search. This means that the time of mongo contains: latency, index creation, (no
-          use of RAM, rather CPU which is slower), use of mongoose which health-checks the documents before insertion etc.
+          use of RAM, rather CPU which is slower), use of mongoose which health-checks the documents before insertion
+          etc.
+        </p>
+      </div>
+    </div>
+    <h1 class="ta-center">Mongo Indexes & Atlas Search</h1>
+    <div class="dp-flex jc-c gap-4">
+      <div class="para-card dp-flex fd-c jc-c">
+        <p>
+          Mongo provides the Index functionality, which can be quite useful for faster query times. On the other hand,
+          creation and updating processes are slower. When inserting a document, Mongodb has to use a predefined (user
+          selected) way of summarizing the data. An update to a document has to change the index, so the queries will
+          not return obsolete data.
+        </p>
+        <p>
+          Atlas Search uses this Index feature to generate a searchable "string". This can not easily be compared to
+          other databases, because it lightly bruteforces combinations of letter-changes from query to index. This index
+          may only be used with aggregate, because of the complex nature of the querying.
         </p>
       </div>
     </div>

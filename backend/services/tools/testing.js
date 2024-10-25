@@ -451,7 +451,7 @@ async function measureMongo_i(size) {
 
 async function testBySize(size, with_ref = false, with_illegal = false) {
   await reset();
-  await sleep(1000)
+  await sleep(1000);
 
   const times = {};
 
@@ -494,8 +494,8 @@ async function testBySize(size, with_ref = false, with_illegal = false) {
   );
 
   if (with_ref) {
-    await reset()
-    await sleep(1000)
+    await reset();
+    await sleep(1000);
     const MongoDB_rTotalTime = await measure(async () => {
       times.MongoDB_r = await measureMongo_r(size);
     });
@@ -507,8 +507,8 @@ async function testBySize(size, with_ref = false, with_illegal = false) {
   }
 
   if (with_illegal) {
-    await reset()
-    await sleep(1000)
+    await reset();
+    await sleep(1000);
     const MongoDB_iTotalTime = await measure(async () => {
       times.MongoDB_i = await measureMongo_i(size);
     });
